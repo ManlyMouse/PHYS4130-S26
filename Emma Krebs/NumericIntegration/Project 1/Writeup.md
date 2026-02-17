@@ -32,19 +32,19 @@ I = \int_0^2 \mathrm{d}x\, \sin^2\left(\sqrt{100x}\right)
 
 To do this, let us go a little more in depth with the trapezoid rule. We mentioned before that the proportionality of decreasing error for the leftpoint and rightpoint methods are approximately the same. Thus, the point of evaluation should not make much of a difference assuming our width of a subinterval is small and since the errors should be roughly the same in magnitude, but opposite in sign, we can make have a better method of integration by averaging both methods. This is where we get our trapezoid rule. That is, to approximate the integral
 
-'''math
+```math
 I = \int_a^b f(x)\,dx\n
-'''
+```
 
 we can do
 
-'''math
+```math
 \tI_T = \\frac{1}{2} \\left( I_L + I_R\\right) = \\sum_{i=0}^{N-1} \\frac{1}{2} \\left[ f(a + ih) + f(a + ih + h) \\right] h\n'$
-'''
+```
 
 In my code, I created the following definition
 
-'''python
+```python
 
     def trapezoid_function(func, a, b, n):
     
@@ -55,11 +55,11 @@ In my code, I created the following definition
             sum += (1 / 2) * h * (func(a + i * h) + func(a + i * h + h))
     
         return sum
-'''
+```
 
 to represent this equation. The definition takes in the parameters func (given function), a (starting point of integral), b (ending point of integral), and n (the number of subintervals). Then, it loops over a range of n subintervals and continously sums using the trapezoid equation and our given parameters to get the approximate answer of the integral for n subintervals. While the trapezoid equation isn't called in the main body, it is called by another very important definition: the approximator.
 
-'''python
+```python
 
     def approximator(f, start, end, true_value, sig_fig):
 
@@ -79,7 +79,7 @@ to represent this equation. The definition takes in the parameters func (given f
                 n *= 2
     
         return sums
-'''
+```
 
 This function definition is what passes the function, a, and b to the trapezoid_function. It also passes the true value of the integral (calculated through some other method) and the precision to which we want to know the accuracy of the approximation. It tracks the number of subintervals, the apporximated sum of that specific subinterval number, and the error from the true answer. The approximator function will also stop once an accuracy to whatever given significant figure is reached. I changed up my method of calculation for this cutoff from notebook 3. I originally used half the final decimal place of wanted degree of accuracy (ie. 10^-4 accuracy meant 0.00005 was passed). However, this didn't always result in the accuracy we were interested in, so I found a nice slideshow from Illinois.edu that gave me the corrected version we see above. It looks to find when the relative error is less than or equal to 10<sup>-n + 1</sup> where n is the decimal significant figure. An example of this is if relative error is 10<sup>-2</sup> then the approximation of x has at most three significant figures. The approximator calls on error_calc to find this relative error and then compare it to the passed sig_fig value. Since we were interested in accuracy to the 10^-6 degree, I passed 0.00005 as our sig_fig value to get a value within that error. Until it finds that n, it will double the number of subintervals each loop. The result of this is the following table:
 
