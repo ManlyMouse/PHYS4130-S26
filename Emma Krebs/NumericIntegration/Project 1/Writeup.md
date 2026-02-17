@@ -10,7 +10,7 @@ meta:
 
 ## Languages, Libraries, Lessons Learned
 
-The primary language for this assignment was Python where we used the libraries scipy, numpy, and pandas. We have consistenly worked in Python from the beginning of this module to the final project. The pandas library was especially useful in creating tables and organizing information. I also learned how to create subplots. I knew you could make a 2x2 grid of plots, but I didn't know you could make sizes up to 4x4 so that was neat. 
+The primary language for this assignment was Python where we used the libraries scipy, numpy, and pandas. We have consistenly worked in Python from the beginning of this module to the final project. The pandas library was especially useful in creating tables and organizing information. I also learned how to create subplots. I knew you could make a 2x2 grid of plots, but I didn't know you could make sizes up to 4x4, so that was neat. 
 
 ## Timekeeping
 
