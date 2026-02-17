@@ -75,7 +75,7 @@ As a refresher, the Legendre polynomials are a set of polynomials that are ortho
 The plots above visually demonstrate the orthogonality condition for the Legendre polynomials.
 
 $$
-\int_{-1}^{1} P_n(x)\,P_m(x)\,dx = \frac{2}{2n+1}\,\delta_{nm}
+\int_{-1}^{1} P_n(x)\,P_m(x)\dx = \frac{2}{2n+1}\\delta_{nm}
 $$
 
 In order to take advantage of the orthogonality conditon in building our algorithm, we want to transform our integral onto the interval [-1,1], which we will do now.
@@ -94,18 +94,17 @@ $$
 $$
 \frac{dx}{du} = \frac{b-a}{2}
 \quad \Rightarrow \quad
-dx = \frac{b-a}{2}\,du.
+dx = \frac{b-a}{2}\ du.
 $$
 
 $$
 \boxed{
-\int_a^b f(x)\,dx
-=
+\int_a^b f(x)\dx=
 \int_{-1}^{1}
 f\!\left(
 \frac{b-a}{2}u + \frac{a+b}{2}
 \right)
-\frac{b-a}{2}\,du.
+\frac{b-a}{2}\du.
 }
 $$
 
@@ -119,7 +118,7 @@ Where the quotient, Q, and the remainder, R, each have a degree less than n.
 
 Then, the next result is a consequecnce of orthogonality. For the legendre polynomial of degree l and any polynomial Q of degree less than l, then
 $$
-\int_{-1}^{1} P_l(x)\,Q(x)\,dx
+\int_{-1}^{1} P_l(x)Q(x)\ dx
 $$
 This happenes because the legendre polynomials of degree less than l form an orthogonal basis for the set of polynomials with degree less than l on the interval [-1,1].
 
@@ -140,7 +139,7 @@ $$
 
 Now, we can start putting together the algorithm. We want to approximate the integral using a weighted sum of the function at n quadrature points in the interval [-1,1].
 $$
-\int_{-1}^{1} f(x) \,dx \approx \sum_{i=1}^{n} w_i f(x_i)
+\int_{-1}^{1} f(x) \ dx \approx \sum_{i=1}^{n} w_i f(x_i)
 $$
 We demand that this approximation be exact for polynomials of degree less than 2n, so let S be such a polynomial. Then, the divison algorithm lets us express this in the form 
 $$
@@ -148,7 +147,7 @@ S(x) = Q(x)P_n(x) + R(x)
 $$
 Where Pn is the nth degree legendre polynomial. Therefore,
 $$
-\int_{-1}^{1} S(x) \, dx = \int_{-1}^{1} Q(x)P_n(x) \,dx + \int_{-1}^{1} R(x) \, dx
+\int_{-1}^{1} S(x) \ dx = \int_{-1}^{1} Q(x)P_n(x) \dx + \int_{-1}^{1} R(x) \ dx
 $$
 Orthogonality gurantees that the integral of Q(x)Pn(x) goes to 0, so we obtain
 $$
