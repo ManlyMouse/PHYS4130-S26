@@ -137,6 +137,8 @@ print() # Cheap way to add space
 x = np.linspace(-1, 1, 200) 
 fig, axes = plt.subplots(4, 4, figsize=(10,10)) # Our subplot grid
 
+multiplied_legendre = [] # array to store information for table 
+
 for i in range(4):
     y_1 = legendre(i+1)(x)
 
@@ -153,7 +155,11 @@ for i in range(4):
         axes[i, j].set_ylabel('Legendre Value')
         axes[i, j].legend(fontsize=5)
 
-        print(f"P{i+1}*P{j+1} is {value} and simplified {round(value, 5)}")
+        
+        multiplied_legendre.append([f'P{i+1}*P{j+1}', value, round(value, 5)])
+
+dq = pd.DataFrame(multiplied_legendre, columns=['P(i)*P(j)', 'Value', 'Approx. Value'])
+print(dq)
 
 plt.tight_layout()
 plt.show()
