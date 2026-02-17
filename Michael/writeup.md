@@ -124,10 +124,10 @@ This happenes because the legendre polynomials of degree less than l form an ort
 
 Finally, we need to discuss Lagrange polynomials because they are used in the very end. If we have n known points of a function, then a polynomial approximation of degree n-1 can be constructed with the formula
 ```math
-g(x) = \sum_{i=1}^{n} f(x_i)L_i(x)
+f(x) \approx \sum_{i=1}^{n} f(x_i)L_i(x)
 ```
 
-The L_i are called the lagrange polynomials. 
+The Li are called the lagrange polynomials. 
 They can be calculated using the formula
 ```math
 L_i(x) = \prod_{i \ne j} \frac{x-x_i}{x_i - x_j}
@@ -151,19 +151,19 @@ Where Pn is the nth degree legendre polynomial. Therefore,
 ```
 Orthogonality gurantees that the integral of Q(x)Pn(x) goes to 0, so we obtain
 ```math
-\int_{-1}^{1} S(x) \, dx = \int_{-1}^{1} R(x) \, dx
+\int_{-1}^{1} S(x) \, dx = \int_{-1}^{1} R(x) \ dx
 ```
 We will set that aside for now and consider our approximation. We want our weighted sum over our n quadrature points to exaclty evalaute the integral of S.
 ```math
-\int_{-1}^{1} S(x) \,dx = \sum_{i=1}^{n} w_i S(x_i) = \sum_{i=1}^{n} w_i (Q(x_i)P_n(x_i) + R(x_i))
+\int_{-1}^{1} S(x) \dx = \sum_{i=1}^{n} w_i S(x_i) = \sum_{i=1}^{n} w_i (Q(x_i)P_n(x_i) + R(x_i))
 ```
 Then, we choose our quadrature points to be the n distinct roots of Pn. This reduces our equation to
 ```math
-\int_{-1}^{1} S(x) \,dx =  \sum_{i=1}^{n} w_i  R(x_i)
+\int_{-1}^{1} S(x) \dx =  \sum_{i=1}^{n} w_i  R(x_i)
 ```
 And we now equate our two forms for the integral to yield
 ```math
-\int_{-1}^{1} R(x) \,dx =  \sum_{i=1}^{n} w_i  R(x_i)
+\int_{-1}^{1} R(x) \dx =  \sum_{i=1}^{n} w_i  R(x_i)
 ```
 The important observation at this step is that we have converted the problem from inegrating a polynomial of degree up to 2n-1 with n quadrature points into an integral of an at most degree n-1 polynomial and n quadrature points. This can be handled precisely with lagrange quadrature. We continue by expressing R in terms of lagrange polynomials. 
 
@@ -177,11 +177,11 @@ R(x) = \sum_{i=1}^{n} S(x_i)L_i(x)
 ```
 So
 ```math
-\int_{-1}^{1} R(x) \, dx = \int_{-1}^{1} \sum_{i=1}^{n} S(x_i)L_i(x)  \, dx = \sum_{i=1}^{n} w_i  S(x_i)
+\int_{-1}^{1} R(x) \ dx = \int_{-1}^{1} \sum_{i=1}^{n} S(x_i)L_i(x)  \ dx = \sum_{i=1}^{n} w_i  S(x_i)
 ```
 By mvoing an integral into the sum and equating terms, we at last determine a formula for the weights.
 ```math
-w_i = \int_{-1}^{1} L_i(x) \,dx = \frac{2}{(1-x_i^2)P'_i(x_i)^2}
+w_i = \int_{-1}^{1} L_i(x) \dx = \frac{2}{(1-x_i^2)P'_i(x_i)^2}
 ```
 Where that last equality is determined using algebra and properties of legendre polynomials. It is omitted here becausee it does not demonstrate the important ideas of Gaussian Quadrature. It is interesting that our weights are completley independent of our integrand. They only depend on the sample points, which are determined by the order of quadrature we have chosen. This can be seen from the defintion of the lagrange polynomials and the final formula obtained.
 
@@ -221,7 +221,7 @@ It is immediatley obvious that at just 14 subintervals this algorithm achieves 1
 
 One thing that distinguishes Gaussian Quadrature from other integration algorithms is that it never evaluates at the limits of integration. This makes it worthwhile to experiment with a function that has a singularity at one of its limits of integration. So, consider
 ```math
-\int_{0}^{2}\frac{y^2}{\sqrt{2-y}} \,dy
+\int_{0}^{2}\frac{y^2}{\sqrt{2-y}} \dy
 ```
 The integrand diverges at y=2, howevever, the integral is know to converge to 
 ```math
@@ -251,26 +251,26 @@ Thankfully, all is not lost. We can transform this integral to remove the singul
 
 Let
 ```math
-y = 2\sin^2 u.
+y = 2\sin^2 (u).
 ```
 
 Then
 ```math
-dy = 4\sin u \cos u \, du.
+dy = 4\sin (u) \cos (u) \ du.
 ```
 
 Compute each part of the integrand:
 
 ```math
-y^2 = (2\sin^2 u)^2 = 4\sin^4 u,
+y^2 = (2\sin^2 (u))^2 = 4\sin^4 (u),
 ```
 
 ```math
-2 - y = 2 - 2\sin^2 u = 2(1 - \sin^2 u) = 2\cos^2 u,
+2 - y = 2 - 2\sin^2 (u) = 2(1 - \sin^2 (u)) = 2\cos^2 (u),
 ```
 
 ```math
-\sqrt{2 - y} = \sqrt{2\cos^2 u} = \sqrt{2}\cos u.
+\sqrt{2 - y} = \sqrt{2\cos^2 (u)} = \sqrt{2}\cos (u).
 ```
 
 Change the limits:
@@ -284,12 +284,12 @@ y=2 \Rightarrow u=\frac{\pi}{2}.
 Substituting:
 
 ```math
-\int_{0}^{2} \frac{y^2}{\sqrt{2 - y}} \, dy
+\int_{0}^{2} \frac{y^2}{\sqrt{2 - y}} \ dy
 =
 \int_{0}^{\pi/2}
-\frac{4\sin^4 u}{\sqrt{2}\cos u}
+\frac{4\sin^4 (u)}{\sqrt{2}\cos (u)}
 \cdot
-4\sin u \cos u \, du.
+4\sin (u) \cos (u) \ du.
 ```
 
 Simplifying:
@@ -297,21 +297,21 @@ Simplifying:
 ```math
 =
 \int_{0}^{\pi/2}
-\frac{16\sin^5 u \cos u}{\sqrt{2}\cos u}
-\, du
+\frac{16\sin^5 (u) \cos u}{\sqrt{2}\cos (u)}
+\ du
 =
 \int_{0}^{\pi/2}
-\frac{16}{\sqrt{2}}\sin^5 u \, du.
+\frac{16}{\sqrt{2}}\sin^5 (u) \ du.
 ```
 
 Since $\frac{16}{\sqrt{2}} = 8\sqrt{2}$,
 
 ```math
 \boxed{
-\int_{0}^{2} \frac{y^2}{\sqrt{2 - y}} \, dy
+\int_{0}^{2} \frac{y^2}{\sqrt{2 - y}} \ dy
 =
 8\sqrt{2}
-\int_{0}^{\pi/2} \sin^5 u \, du
+\int_{0}^{\pi/2} \sin^5 (u) \ du
 }
 ```
 
@@ -333,19 +333,19 @@ Gaussian Quadrature
 
 This has clearly recovered the efficiciency we saw before, achiecing 10 decimal precision at 9 quadrature points. To wit, we can compare this to a previous efficient algorithm called Simpson's rule. It works by apprxoimating a funciton with quadratics. Its tabulated values are 
 
-Simpson's Rule
-
- Intervals        Approx Value                     Error
-         5        6.0339926684    0.00001480227942884937
-        10        6.0339780817    0.00000021561509910839
-        15        6.0339778848    0.00000001869018362299
-        20        6.0339778694    0.00000000331175797896
-        25        6.0339778670    0.00000000086638429764
-        30        6.0339778664    0.00000000028982505285
-        35        6.0339778662    0.00000000011485834506
-        40        6.0339778662    0.00000000005152589466
-        45        6.0339778662    0.00000000002540812005
-        50        6.0339778661    0.00000000001350031198
+    Simpson's Rule
+    
+     Intervals        Approx Value                     Error
+             5        6.0339926684    0.00001480227942884937
+            10        6.0339780817    0.00000021561509910839
+            15        6.0339778848    0.00000001869018362299
+            20        6.0339778694    0.00000000331175797896
+            25        6.0339778670    0.00000000086638429764
+            30        6.0339778664    0.00000000028982505285
+            35        6.0339778662    0.00000000011485834506
+            40        6.0339778662    0.00000000005152589466
+            45        6.0339778662    0.00000000002540812005
+            50        6.0339778661    0.00000000001350031198
 
 To achieve the same precision as Gaussian Quadrature, Simpson's rule needed 35 intervals. This is still an improvement over the trapezoidal rule, but not quie as good as Gaussian Quadrature. Furthermore, this algorithm would have been compeletely unable to evaluate this integral without the subsistituion whereas Gaussian Quadrature was still able to approximate it somewhat.
 
