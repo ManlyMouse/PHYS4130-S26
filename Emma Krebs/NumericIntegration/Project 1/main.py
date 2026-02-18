@@ -111,8 +111,8 @@ def Legendre_multiplier(i, j, x_values):
 
     u_x_values = u(x_values, min(x_values), max(x_values))
 
-    y = p1(u_x_values) * p2(u_x_values) # Evaulated function for plotting
-    integrand = p1 * p2 # Unevaulated function for integrating
+    y = p1(u_x_values) * p2(u_x_values) # Evaluated function for plotting
+    integrand = p1 * p2 # Unevaluated function for integrating
 
     scale = du(min(u_x_values), max(u_x_values)) 
 
