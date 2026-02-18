@@ -207,7 +207,7 @@ This orthogonality property is what will allow us to define the Legendre's roots
 \int_{-1}^{1} \mathrm{d}x\, f(x) \approx \sum_{i=1}^N c_{N,i} f\left(x_{N,i}\right)
 ```
 
-where the points $`x_{N,i}`$ are the roots of the N<sub>th<\sub> order Legendre polynomial, and the weights are given by the following integral:
+where the points $`x_{N,i}`$ are the roots of the N<sub>th</sub> order Legendre polynomial, and the weights are given by the following integral:
 
 ```math
 c_{i,n}=\frac{1}{P_n^{\prime}(x_{N,i})}\int_{-1}^1\frac{P_n(x)}{x-x_{N,i}} \mathrm{d}x
@@ -245,7 +245,7 @@ Now that we have this paper's definition, we can do the proof.
 
 <ins>Proof.</ins>
 
-Suppose w(x) is an arbitrary weight function and A = {u<sub>1</sub>... u<sub>n</sub>} is the associated orthogonal polynomial set that spans all polynomials of degree &le n. Let u<sub>n+1</sub> be the associared orthogonal polynomial with degree n+1. Now, consider a monomial, or single term expression, x<sup>L</sup> where L &le n. Now, since orthogonal polynomials form a basis, we can write x<sup>L</sup> in terms of A such that
+Suppose w(x) is an arbitrary weight function and A = {u<sub>1</sub>... u<sub>n</sub>} is the associated orthogonal polynomial set that spans all polynomials of degree \&le n. Let u<sub>n+1</sub> be the associated orthogonal polynomial with degree n+1. Now, consider a monomial, or single term expression, x<sup>L</sup> where L &le n. Now, since orthogonal polynomials form a basis, we can write x<sup>L</sup> in terms of A such that
 
 ```math
 x^L = \sum_{i=0}^N \gamma_i u_i(x)
