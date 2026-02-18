@@ -17,9 +17,9 @@ import matplotlib.pyplot as plt
 '''
     Definition: trapezoid_function
     Parameters: func (Given function), a (Starting point of subdivision), b (Ending point of subdivision),
-        and n (the number of subintevrals).
-    Description: Takes in a function, a starting point, and an ending point and goes through an increasing
-        number of subintervals to come to the closest *********
+        and n (the number of subintervals).
+    Description: This function loops over a range of n subintervals and continously sums using the trapezoid 
+        equation and our given parameters to get the approximate answer of the integral for n subintervals.
 '''
 def trapezoid_function(func, a, b, n):
 
@@ -131,11 +131,13 @@ print("\nTest for Gaussian Quadrature with a = 1, b = 7, and x = 5")
 print("The starting point 1 becomes: ", u(1, 1, 7))
 print("The ending point 7 becomes: ", u(7, 1, 7))
 print("The test variable 5 becomes: ", u(5, 1, 7))
-print()
+print() # Cheap way to add space
 
 # For Legendre Polynomials
 x = np.linspace(-1, 1, 200) 
 fig, axes = plt.subplots(4, 4, figsize=(10,10)) # Our subplot grid
+
+multiplied_legendre = [] # array to store information for table 
 
 for i in range(4):
     y_1 = legendre(i+1)(x)
@@ -144,7 +146,7 @@ for i in range(4):
         y_2 = legendre(j+1)(x)
         axes[i, j].plot(x, y_1, label=f'P{i+1}')
         axes[i, j].plot(x, y_2, label=f'P{j+1}')
-        title = "P" + str(i+1) +", P" + str(j+1)+", P" + str(i+1) + "*P" + str(j+1)
+        title = f"P{i+1}, P{j+1}, P{i+1}*P{j+1}"
         axes[i, j].set_title(title, size=8)
         y_3, value = Legendre_multiplier(i, j, x)
         axes[i, j].plot(x, y_3, label=f'P{i+1}*P{j+1}')
@@ -153,7 +155,11 @@ for i in range(4):
         axes[i, j].set_ylabel('Legendre Value')
         axes[i, j].legend(fontsize=5)
 
-        print(f"The value of the integral P{i+1}*P{j+1} is {value} and simplified {round(value, 5)}")
+        
+        multiplied_legendre.append([f'P{i+1}*P{j+1}', value, round(value, 5)])
+
+dq = pd.DataFrame(multiplied_legendre, columns=['P(i)*P(j)', 'Value', 'Approx. Value'])
+print(dq)
 
 plt.tight_layout()
 plt.show()
@@ -169,3 +175,9 @@ for N in range(4):
 
 dg = pd.DataFrame({'P(x)': values_array,'Roots': roots_array, 'Weights': weights_array})
 print(dg)
+
+# ------------------ Extension ------------------
+
+# This section is for extension question 1
+
+
