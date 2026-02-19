@@ -109,7 +109,9 @@ def quad(a, b, N):
 print("GUASSIAN QUADRATURE: ")
 N_array = [2**k for k in range(1, 10)]
 for i in N_array:
-    print ("N: ", i, "; Guassian quadrature result: ", quad(0, 2, i))
+    num_result = quad(0, 2, i)
+    error = np.abs(num_result - soln)
+    print ("N: ", i, "; Guassian quadrature result: ", num_result, "Error: ", error)
 
 # Legendre polynomial plots
 
@@ -138,3 +140,46 @@ for i in range(4):
 
 py.tight_layout()
 py.show()
+
+# Extension 1
+print("\n EXTENSION 1:")
+print("\n BEFORE SUBSTITUTION:")
+import scipy as sp
+import numpy as np
+
+def f(y):
+    return ((y**2) / sqrt(y))
+
+def sqrt(y):
+    return np.sqrt(2-y)
+
+Analytic_result = 6.0339778661252055415538718899613784685639333349416451122205002154
+
+def yquad(a, b, N):
+    roots, weights = sp.special.roots_legendre(N)
+    y = ((b-a)*roots/2)+(a+b)/2
+    dy_over_du = 2/(b-a)
+    return dy_over_du* np.sum(weights*f(y))
+N_array = [2**k for k in range(1, 15)]
+for i in N_array:
+    num_result = yquad(0, 2, i)
+    error = np.abs(num_result - Analytic_result)
+    print ("N: ", i, "; Guassian quadrature result: ", num_result, "Error: ", error)
+
+# y = 2sin**2(t)
+print("\n AFTER SUBSTITUTION:")
+def f(t):
+    return (16*(np.sin(t)**5)/np.sqrt(2))
+
+Analytic_result = 6.0339778661252055415538718899613784685639333349416451122205002154
+
+def tquad(a, b, N):
+    roots, weights = sp.special.roots_legendre(N)
+    t = ((b-a)*roots/2)+(a+b)/2
+    dt_over_du = (b-a)/2
+    return dt_over_du* np.sum(weights*f(t))
+N_array = [2**k for k in range(1, 15)]
+for i in N_array:
+    num_result = tquad(0, np.pi/2, i)
+    error = np.abs(num_result - Analytic_result)
+    print ("N: ", i, "; Guassian quadrature result: ", num_result, "Error: ", error)
