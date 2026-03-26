@@ -50,6 +50,7 @@ def Symplectic_Euler(x_0, p_0, w, h, steps, damp):
         x_0 (int/float): Initial x position.
         p_0 (int/float): Initial momentum position.
         w (int/float): Angular frequency for harmonic oscillator.
+        h (int/float): Size of step (how much are we changing over)
         steps (int): Number of iterations for function.
         damp (int/float): Damping term (if there is one).
 
@@ -75,22 +76,26 @@ def Symplectic_Euler(x_0, p_0, w, h, steps, damp):
     return x_array, p_array
 
 
-def RK45_solver(y_0, w, damp, tmin, tmax, time_total):
+def RK45_solver(y_0, w, damp, tmin, tmax, step):
 
     """
-    
+    Calls the RK45 solver from scipy.integrate which is the Runge–Kutta–Fehlberg method, an 
+    algorithm numerical analysis for the numerical solution of ODE's. 
 
     Args:
+        y_0 (tuple): Initial conditions.
+        w (int/float): Angular frequency of harmonic oscillator.
+        damp (int/float): Dampening term.
+        tmin (int/float): Minimum time value.
+        tmin (int/float): Maximum time value.
+        step (int/float): Value of steps using for the time function
         
-
     Returns:
-        tuple: 
+        Three arrays: Arrays for x values and p values for time. t_array for time is returned as well. 
     """
 
-    t = np.linspace(tmin, tmax, time_total) # Time range
-
     # Object that is used to generate arrays
-    solver = RK45(lambda t, y_0: Harmonic_deriv(t, y_0, w, damp), tmin, y_0, tmax, max_step=0.05)
+    solver = RK45(lambda t, y_0: Harmonic_deriv(t, y_0, w, damp), tmin, y_0, tmax, max_step=step)
 
     x_array = []
     p_array = []
@@ -106,19 +111,26 @@ def RK45_solver(y_0, w, damp, tmin, tmax, time_total):
     return x_array, p_array, t_array
 
 
-def Odeint_solver(y_0, w, damp, tmin, tmax, time_total):
+def Odeint_solver(y_0, w, damp, tmin, tmax, number_steps):
 
     """
-    
+    Calls the odeint function from scipy.integrate. odeint solves a system of ordinary 
+    differential equations using lsoda from the FORTRAN library odepack.
 
     Args:
-        
+        y_0 (tuple): Initial conditions.
+        w (int/float): Angular frequency of harmonic oscillator.
+        damp (int/float): Dampening term.
+        tmin (int/float): Minimum time value.
+        tmin (int/float): Maximum time value.
+        number_steps (int/float): Number of steps
 
     Returns:
-        tuple: 
+        tuple: Returns t as the t_array and N as an tuple of arrays, which incorporates 
+        all the x and p values. 
     """
 
-    t = np.linspace(tmin, tmax, time_total)
+    t = np.linspace(tmin, tmax, number_steps)
     N = odeint(Harmonic_deriv, y_0, t, args=(w, damp), tfirst=True)
     
     return t, N
