@@ -1,0 +1,150 @@
+# import libraries
+import numpy as np
+import matplotlib.pyplot as plt
+
+# initialize variables
+x = 2
+df = lambda x: (-np.sin(x) * np.tanh(x)) + (np.cos(x) * (1/np.cosh(x))**2)
+df_actually = df(x)
+
+h = [10**(-1), 10**(-2), 10**(-3), 10**(-4), 10**(-5), 10**(-6), 10**(-7)]
+f_error = np.zeros(len(h))
+b_error = np.zeros(len(h))
+
+# define important functions
+def forward(f, h):
+    return (f(x + h) - f(x)) / h
+
+def backward(f, h):
+    return (f(x) - f(x - h)) / h
+
+# loops to fill arrays
+for j, hi in enumerate(h):
+    fwd = forward(lambda x: np.cos(x) * np.tanh(x), hi)
+    bkwd = backward(lambda x: np.cos(x) * np.tanh(x), hi)
+
+    f_error[j] = np.abs(fwd - df_actually)
+    b_error[j] = np.abs(bkwd - df_actually)
+
+# plots
+m_fwd, _ = np.polyfit(np.log(h), np.log(f_error), 1)
+m_bwd, _ = np.polyfit(np.log(h), np.log(b_error), 1)
+
+plt.loglog(h, f_error, label=f'Forward (slope ≈ {m_fwd:.2f})', color = 'red')
+plt.xlabel('h')
+plt.ylabel('Error')
+plt.legend()
+plt.show()
+
+plt.loglog(h, b_error, label=f'Backward (slope ≈ {m_bwd:.2f})', color = 'pink')
+plt.xlabel('h')
+plt.ylabel('Error')
+plt.legend()
+plt.show()
+
+# printing the derivative values
+print("")
+print(f'The forward derivative is {fwd} and the backward derivative is {bkwd}, as compared to the actual value of {df_actually}.')
+##############################################
+# making the h array bigger
+h = np.array([10**(-i) for i in range(1, 15)])
+f_error = np.zeros(len(h))
+b_error = np.zeros(len(h))
+
+# for loop that fills the empty arrays
+for j, hi in enumerate(h):
+    fwd = forward(lambda x: np.cos(x) * np.tanh(x), hi)
+    bkwd = backward(lambda x: np.cos(x) * np.tanh(x), hi)
+
+    f_error[j] = np.abs(fwd - df_actually)
+    b_error[j] = np.abs(bkwd - df_actually)
+
+# plots
+m_fwd, _ = np.polyfit(np.log(h), np.log(f_error), 1)
+m_bwd, _ = np.polyfit(np.log(h), np.log(b_error), 1)
+
+plt.loglog(h, f_error, label=f'Forward (slope ≈ {m_fwd:.2f})', color = 'green')
+plt.xlabel('h')
+plt.ylabel('Error')
+plt.legend()
+plt.show()
+
+plt.loglog(h, b_error, label=f'Backward (slope ≈ {m_bwd:.2f})', color = 'blue')
+plt.xlabel('h')
+plt.ylabel('Error')
+plt.legend()
+plt.show()
+##############################################
+# intialize variables
+h = np.array([10**(-i) for i in range(1, 6)])
+c_error = np.zeros(len(h))
+
+# define the central difference function
+def central(f, h):
+  return (f(x + h) - f(x - h)) / (2 * h)
+
+# for loop that fills the empty arrays
+for j, hi in enumerate(h):
+    cent = central(lambda x: np.cos(x) * np.tanh(x), hi)
+    c_error[j] = np.abs(cent - df_actually)
+
+# plots
+m_cent, _ = np.polyfit(np.log(h**2), np.log(c_error), 1)
+
+plt.loglog(h**2, c_error, label=f'Central (slope ≈ {m_cent:.2f})', color='purple')
+plt.xlabel('h^2')
+plt.ylabel('Error')
+plt.legend()
+plt.show()
+
+# printing the derivative value
+print("")
+print(f'The central difference derivative is {cent}, as compared to the actual value of {df_actually}.')
+##############################################
+# intialize variables
+h = np.array([10**(-i) for i in range(1, 4)])
+fi_error = np.zeros(len(h))
+
+# define the central difference function
+def fivept(f, h):
+  return (f(x-2*h) - 8*f(x-h) + 8*f(x+h) - f(x+2*h)) / (12*h)
+
+# for loop that fills the empty arrays
+for j, hi in enumerate(h):
+    five = fivept(lambda x: np.cos(x) * np.tanh(x), hi)
+    fi_error[j] = np.abs(five - df_actually)
+
+# plots
+m_five, _ = np.polyfit(np.log(h**4), np.log(fi_error), 1)
+
+plt.loglog(h**4, fi_error, label=f'Central (slope ≈ {m_cent:.2f})', color='orange')
+plt.xlabel('h^4')
+plt.ylabel('Error')
+plt.legend()
+plt.show()
+
+# printing the derivative values
+print("")
+print(f'The five point centered stencil approximation is {five}, as compared to the actual derivative value of {df_actually}.')
+# I solved for a = 1/12h, b = -2/3h, c = 0, d = 2/3h, and e = -1/12h. This made an approximation for $f'(x) = (f(x-2h) -8f(x+h) + 8f(x+h) -f(x+2h)) / (12h)$.
+##############################################
+# initialize variables
+h = 0.01
+x = np.arange(2.0, 5.0 + h, h)
+f = lambda x: np.log(x) / np.cosh(x)
+
+# three-point centered stencil for second derivative
+d2f = (f(x[2:]) - 2*f(x[1:-1]) + f(x[:-2])) / h**2
+x_mid = x[1:-1]
+
+# plot
+plt.plot(x_mid, d2f, color='goldenrod')
+plt.xlabel('x')
+plt.ylabel("f''(x)")
+plt.show()
+
+
+##############################################
+
+# For the limits, cosh(x) grows like x^2 and ln(x) grows slowly, while the function itself approaches zero as x increases. Thus, f''(x) should also decay as x increases. The curve is smooth (not oscillating), so the stencil is working correctly. This makes sense because the function is infinitely differentiable when x > 0. We also do not see the jagged edges caused by certain h values from the previous plots. 
+

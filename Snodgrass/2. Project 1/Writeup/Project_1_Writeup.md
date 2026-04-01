@@ -1,11 +1,14 @@
 ---
 meta:
     Author: Alec Snodgrass
-    Topic: Numeric Integration Project
+    Topic:  Numeric Integration Project
     Course: TN Tech PHYS4130
-    Term: Spring 2026
+    Term:   Spring 2026
 ---
 # Numeric Integration Project
+
+## Introduction 
+Missing
 
 ## Trapezoid approximation
 
