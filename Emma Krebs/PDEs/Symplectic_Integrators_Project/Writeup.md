@@ -19,6 +19,12 @@ meta:
 
 The main system we studied with these methods of integration was harmonic oscillation, which is defined to be a system that experiences a restoring force proportional to its displacement towards an equilibirum point. Some classical examples of this are mass springs and pendulums, where the restoring forces are from the spring and gravity, respectively. However, the harmonic oscillator is even more important to physics than just describing these simple examples because any mass subject to a force in stable equilibrium acts as a harmonic oscillator in small vibrations. Therefore, there are many physical phenomenon we can apply this system to, such as: quantum's potential wells, orbital perturbations, stellar oscillations, and more. 
 
+Harmonic oscillators are characterized by two main categories, damped and undamped oscillators. These change what their phase plot diagrams look like, which are their space vs momentum graphs. For undamped systems, they are circular or elliptical shaped paths depending on the angular frequency of the system. An angular frequency of one results in a circular shape. An angular frequency less than one stretches the circle in the positon axis' direction and above one stretches it into the momentum axis' direction. An example of what these graphs look like are demonstrated below for the three integrators we will be investigating:
+
+[ADD IMAGEs HERE]
+
+Although these all maintain similar shapes, if you look closely some appear to have thicker lines. These are from an accumulation of errors due to the method of integration. Let us see what makes these integrations unique and what these errors look like!
+
 ### Symplectic Integration
 
 - Explain what symplectic integration is and the function you used, what it does good at.
