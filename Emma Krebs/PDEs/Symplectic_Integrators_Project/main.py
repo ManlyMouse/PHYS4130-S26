@@ -160,6 +160,22 @@ for method_name, method_func in methods.items():
 
 # -------------------- Extensions -----------------------------
 
-# def Virial_theorem():
+# Need to do a two body orbit
 
+def Virial_theorem():
+
+     """
+    This function definition returns the kinetic, potential, and total energy for a given 
+    array of x and p (along with their angular frequency) for a harmonic oscillator.
+
+    Args:
+        x_array (array): Array of x positions
+        p_array (array): Array of p momentums
+        w (int.float): Angular frequency
+
+    Returns:
+        Three arrays: Kinetic, potential, and total energy arrays
+        
+    """
+     
 
