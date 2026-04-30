@@ -75,6 +75,7 @@ As of 4/23/26: 36 hours
 
 https://en.wikipedia.org/wiki/Octree (Wiki for Octree)
 https://www.osti.gov/servlets/purl/1008123#:~:text=Computational%20simulation%20must%20often%20be,the%20mesh%20generation%20code%2C%20CUBIT. (Computational Information for Eulerian Octree)
+https://gmd.copernicus.org/articles/17/6401/2024/ (Adapative Mesh Octree)
 
 ### Books
 

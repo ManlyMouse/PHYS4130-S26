@@ -6,43 +6,42 @@ class Node:
     '''
         Class: Node
         Description: Object class Node that will be used to subdivided the 3D space to make generation time much faster.
-        Each node contains information on the center of the subdivision, the range of the grid (how big it is), and 
-        an empty array of children. After it is subdivided, this children array will be updated with more nodes.
+        Each node contains information on the center of the subdivision, the size of the cell, and 
+        an empty array of children. After it is subdivided, this children array will be updated with more nodes. Additionally,
+        this cell keeps track of all the fluid dynamic variables for the region.
     '''
 
-    def __init__(self, center, grid, depth):
+    def __init__(self, center, size, depth):
         self.center = center
-        self.grid = grid
+        self.size = size
         self.depth = depth
         self.leaf = True
-        self.children = [None, None, None, None, None, None, None, None]
-        self.particles = [] # Each Node will only hold one particle at a time for its leaves
+        self.children = [None, None, None, None, None, None, None, None] # Produces 8 children for subdivision
 
-    
-class Particle:
-    '''
-        Class: Particle
-        Description: Particle object that stores location, age, and probability. Can call a random walk on itself
-        and store the data.
-    '''
-    def __init__(self, location, probability):
-        self.location = location
-        self.probability = probability
-        self.stuck = False
+        # Fluid dynamic variables
+        self.u = 0 # Velocity for X axis
+        self.v = 0 # Velocity for Y axis
+        self.w = 0 # Velocity for Z axis
+        self.omega = [0, 0 , 0] # Vorticity for x-, y-, z- directions
+        self.T = 0 # Temperature 
 
-    def random_walk(self):
-        numbers = [-1, 0, 1] # Random walk options
-        random_walked = random.choices(numbers , k=3)
-
-        # Update the location due to random walk
-        for i in range(len(random_walked)):
-            self.location[i] += random_walked[i]
+        # Calculate the neighbors after each rebuilding of leaf list. Includes six neighbors on each cell's face.
+        # This is to shorten number of loops we have to go through to calculate temperature gradients.
+        # Only needs to be updated if we subdivide/collapse the octree
+        self.neighbors = {
+            'xm': None, # all labels of m means minus direction. So this is face on the negative x side
+            'xp': None, # all labels of p means positive direction. So this is face on the positive x side
+            'ym': None,
+            'yp': None,
+            'zm': None,
+            'zp': None,
+        }
 
 
 def subdivide(node, depth_value, center, n):
     '''
         Takes a node and subdivides the grid into 8 more parts to create an octree. Quickens computing
-        time by limiting the number of possible neighbors a moving particle has to check for sticking. 
+        time by limiting the number of possible neighbors to calculate gradients for.
 
         Args:
             node (class): Object for center and grid of a region of our 3D space
@@ -55,10 +54,10 @@ def subdivide(node, depth_value, center, n):
     if node.depth < n:
         node.leaf = False # It is no longer a leaf case. It has children now!!!
         depth = node.depth + 1 # Update depth
-        grid_value = node.grid[0] / 2
+        grid_value = node.size / 2
         grid = [grid_value, grid_value, grid_value]
         
-        offset_center = [-grid_value/2, grid_value/2] # Need to offset center. Can either add or subtract.
+        offset_center = [-grid_value/2, grid_value/2] # Need to offset center for grid.
 
         child_index = 0
         for dx in offset_center:
@@ -70,24 +69,18 @@ def subdivide(node, depth_value, center, n):
 
                     node.children[child_index] = Node([center_x, center_y, center_z], grid, depth)
                     child_index += 1
-        
-        old_particles = node.particles
-        node.particles = []
-
-        for p in old_particles:
-            insert_particle(node, p, n)
 
         for child in node.children:
             subdivide(child, depth_value, center, n)
 
 
-def find_node(root, point, n):
+def find_node(root, point):
     '''
         Given a point this finds out with leaf node it is in and returns that node.
 
         Args:
             root (Object): Root node that is connected to all other nodes. Can transverse to find leaves.
-            point (Array): Location of neighborhood. Want to check if there's any particles around.
+            point (Array): Location of neighborhood.
         
         Returns:
             node (Object): Returns node of a certain location
@@ -121,3 +114,7 @@ def find_node(root, point, n):
         node = found_node
 
     return node, value
+
+
+
+
