@@ -38,26 +38,30 @@ class Node:
         }
 
 
-def subdivide(node, depth_value, center, n):
+def subdivide(node, n):
     '''
         Takes a node and subdivides the grid into 8 more parts to create an octree. Quickens computing
         time by limiting the number of possible neighbors to calculate gradients for.
 
         Args:
             node (class): Object for center and grid of a region of our 3D space
-            depth_value (int): Cutoff value for a nodes depth depending on starting grid size.
+            n (int): Cutoff value for a nodes depth depending on starting grid size.
 
         Returns:
             None: Updates the nodes directly. Doesn't return anything. 
     '''
 
+    if node.leaf != True:
+        return
+
     if node.depth < n:
         node.leaf = False # It is no longer a leaf case. It has children now!!!
         depth = node.depth + 1 # Update depth
         grid_value = node.size / 2
+        node.size = grid_value
         grid = [grid_value, grid_value, grid_value]
         
-        offset_center = [-grid_value/2, grid_value/2] # Need to offset center for grid.
+        offset_center = [-grid_value/2, grid_value/2] # Need to offset center for grid so it is in middle of box.
 
         child_index = 0
         for dx in offset_center:
@@ -67,16 +71,35 @@ def subdivide(node, depth_value, center, n):
                     center_y = node.center[1] + dy
                     center_z = node.center[2] + dz
 
-                    node.children[child_index] = Node([center_x, center_y, center_z], grid, depth)
+                    child = Node([center_x, center_y, center_z], grid, depth)
+
+                    # The parents parameters will become the children's
+                    child.u = node.u
+                    child.v = node.v
+                    child.w = node.w
+                    child.omega = node.omega
+                    child.T = node.T
+                    
+                    node.children[child_index] = child
                     child_index += 1
 
-        for child in node.children:
-            subdivide(child, depth_value, center, n)
+
+def collapse(node, n):
+
+    '''
+            Takes a node and collapses it back into a larger grid. Values are averaged 
+
+            Args:
+                
+
+            Returns:
+                
+        '''
 
 
 def find_node(root, point):
     '''
-        Given a point this finds out with leaf node it is in and returns that node.
+        Given a point this finds out the leaf node it is in and returns that node.
 
         Args:
             root (Object): Root node that is connected to all other nodes. Can transverse to find leaves.
@@ -116,5 +139,70 @@ def find_node(root, point):
     return node, value
 
 
+def get_leaves(node):
 
+    '''
+        Given a node it will find all the connected leaves. If given the root, it finds all leaves in
+        the entire system.
+
+        Args:
+            node (Object): Node object that you want to find the leaves of. 
+        
+        Returns:
+            leaves (array): Array of leaf nodes.
+    '''
+    leaves = []
+
+    if node.leaf == True:
+        return [node]
+    
+    for child in node.children:
+        if child != None:
+            leaves.extend(get_leaves(child))
+
+    return leaves
+
+
+
+def get_neighbors(node):
+
+    '''
+        Finds a neighbor for a node's location.
+
+        Args:
+            root (Object): Node you are trying to find neighbors for
+        
+        Returns:
+            neighbors (Dict): Dictionary of neighbors depending on their axis and positive or negative direction.
+           
+    '''
+
+    # Look for surrounding neighbors
+    
+    x, y, z = node.center
+
+    # All the same distance, so use dx for dx, dy, dz
+    dx = node.size / 2
+
+    neighbors = {} # Dictionary of neighbors
+
+    probes = {
+    'xm': [x - dx, y, z],
+    'xp': [x + dx, y, z],
+    'ym': [x, y - dx, z],
+    'yp': [x, y - dx, z],
+    'xm': [x, y, z - dx],
+    'xp': [x, y, z - dx]
+    }
+
+    for key, probe in probes.items():
+
+        neighbor, _ = find_node(node, probe)
+
+        if neighbor != node:
+            neighbors[key] = neighbor
+        else:
+            neighbors[key] = None
+
+    return neighbors
 

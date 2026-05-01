@@ -7,7 +7,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 
 
-num_particles = 3000 # Note: Only use even numbers or else you will get error because of your division setup
+num_particles = 300 # Note: Only use even numbers or else you will get error because of your division setup
 grid_value = int(num_particles/2)
 grid_size = [grid_value, grid_value, grid_value]
 current_maximum = 1
