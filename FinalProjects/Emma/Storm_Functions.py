@@ -38,7 +38,7 @@ class Node:
         }
 
 
-def subdivide(node, n):
+def subdivide(node, max_depth):
     '''
         Takes a node and subdivides the grid into 8 more parts to create an octree. Quickens computing
         time by limiting the number of possible neighbors to calculate gradients for.
@@ -51,37 +51,34 @@ def subdivide(node, n):
             None: Updates the nodes directly. Doesn't return anything. 
     '''
 
-    if node.leaf != True:
+    if node.leaf != True or node.depth >= max_depth:
         return
 
-    if node.depth < n:
-        node.leaf = False # It is no longer a leaf case. It has children now!!!
-        depth = node.depth + 1 # Update depth
-        grid_value = node.size / 2
-        node.size = grid_value
-        grid = [grid_value, grid_value, grid_value]
-        
-        offset_center = [-grid_value/2, grid_value/2] # Need to offset center for grid so it is in middle of box.
+    node.leaf = False # It is no longer a leaf case. It has children now!!!
+    depth = node.depth + 1 # Update depth
+    child_size = node.size / 2
+    
+    offsets = [-child_size/2, child_size/2] # Need to offset center for grid so it is in middle of box.
 
-        child_index = 0
-        for dx in offset_center:
-            for dy in offset_center:
-                for dz in offset_center:
-                    center_x = node.center[0] + dx
-                    center_y = node.center[1] + dy
-                    center_z = node.center[2] + dz
+    child_index = 0
+    for dx in offsets:
+        for dy in offsets:
+            for dz in offsets:
+                center_x = node.center[0] + dx
+                center_y = node.center[1] + dy
+                center_z = node.center[2] + dz
 
-                    child = Node([center_x, center_y, center_z], grid, depth)
+                child = Node([center_x, center_y, center_z], child_size, depth)
 
-                    # The parents parameters will become the children's
-                    child.u = node.u
-                    child.v = node.v
-                    child.w = node.w
-                    child.omega = node.omega
-                    child.T = node.T
-                    
-                    node.children[child_index] = child
-                    child_index += 1
+                # The parents parameters will become the children's
+                child.u = node.u
+                child.v = node.v
+                child.w = node.w
+                child.omega = node.omega.copy() # Bc it is array
+                child.T = node.T
+                
+                node.children[child_index] = child
+                child_index += 1
 
 
 def collapse(node, n):
@@ -164,13 +161,14 @@ def get_leaves(node):
 
 
 
-def get_neighbors(node):
+def get_neighbors(root, node):
 
     '''
         Finds a neighbor for a node's location.
 
         Args:
-            root (Object): Node you are trying to find neighbors for
+            root (Object): Root object of the space
+            node (Object): Node you are trying to find neighbors for
         
         Returns:
             neighbors (Dict): Dictionary of neighbors depending on their axis and positive or negative direction.
@@ -182,7 +180,7 @@ def get_neighbors(node):
     x, y, z = node.center
 
     # All the same distance, so use dx for dx, dy, dz
-    dx = node.size / 2
+    dx = node.size * 0.51
 
     neighbors = {} # Dictionary of neighbors
 
@@ -190,19 +188,47 @@ def get_neighbors(node):
     'xm': [x - dx, y, z],
     'xp': [x + dx, y, z],
     'ym': [x, y - dx, z],
-    'yp': [x, y - dx, z],
-    'xm': [x, y, z - dx],
-    'xp': [x, y, z - dx]
+    'yp': [x, y + dx, z],
+    'zm': [x, y, z - dx],
+    'zp': [x, y, z + dx]
     }
 
     for key, probe in probes.items():
 
-        neighbor, _ = find_node(node, probe)
+        neighbor, _ = find_node(root, probe)
 
-        if neighbor != node:
+        if neighbor is not None:
             neighbors[key] = neighbor
         else:
             neighbors[key] = None
 
     return neighbors
 
+
+def diffuse(leaves, alpha=0.1):
+    new_T = {}
+    for node in leaves:
+        neighbor_temps = []
+        # Use the cached neighbors instead of looping through all leaves
+        for key in ['xm', 'xp', 'ym', 'yp', 'zm', 'zp']:
+            nb = node.neighbors.get(key)
+            if nb:
+                neighbor_temps.append(nb.T)
+        
+        if neighbor_temps:
+            avg = sum(neighbor_temps) / len(neighbor_temps)
+            new_T[id(node)] = node.T + alpha * (avg - node.T)
+        else:
+            new_T[id(node)] = node.T
+
+    for node in leaves:
+        node.T = new_T[id(node)]
+def build_tree(node, max_depth):
+    if node.depth >= max_depth:
+        return
+    
+    subdivide(node, max_depth)
+    
+    for child in node.children:
+        if child is not None:
+            build_tree(child, max_depth)

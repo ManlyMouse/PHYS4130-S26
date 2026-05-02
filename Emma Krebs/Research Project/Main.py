@@ -62,30 +62,33 @@ for file_name in files:
     x_Hb, y_Hb = extract_xy(H, "Basil")
     x_Ht, y_Ht = extract_xy(H, "Tomato")
 
-    plt.scatter(x_Hb, y_Hb, marker='o', color='lightseagreen', label='H Basil')
-    plt.scatter(x_Ht, y_Ht, marker='s', color='lightseagreen', label='H Tomato')
+    plt.scatter(x_Hb, y_Hb, marker='o', color='red', label='10% Basil')
+    plt.scatter(x_Ht, y_Ht, marker='x', color='red', label='10% Tomato')
 
     x_Pb, y_Pb = extract_xy(P, "Basil")
     x_Pt, y_Pt = extract_xy(P, "Tomato")
 
-    plt.scatter(x_Pb, y_Pb, marker='o', color='coral', label='P Basil')
-    plt.scatter(x_Pt, y_Pt, marker='s', color='coral', label='P Tomato')
+    plt.scatter(x_Pb, y_Pb, marker='o', color='blue', label='100% Basil')
+    plt.scatter(x_Pt, y_Pt, marker='x', color='blue', label='100% Tomato')
 
     x_Gb, y_Gb = extract_xy(G, "Basil")
     x_Gt, y_Gt = extract_xy(G, "Tomato")
 
-    plt.scatter(x_Gb, y_Gb, marker='o', color='skyblue', label='G Basil')
-    plt.scatter(x_Gt, y_Gt, marker='s', color='skyblue', label='G Tomato')
+    plt.scatter(x_Gb, y_Gb, marker='o', color='green', label='50% Basil')
+    plt.scatter(x_Gt, y_Gt, marker='x', color='green', label='50% Tomato')
 
     x_Db, y_Db = extract_xy(D, "Basil")
     x_Dt, y_Dt = extract_xy(D, "Tomato")
 
-    plt.scatter(x_Db, y_Db, marker='o', color='purple', label='D Basil')
-    plt.scatter(x_Dt, y_Dt, marker='s', color='purple', label='D Tomato')
+    plt.scatter(x_Db, y_Db, marker='o', color='purple', label='Misc. Basil')
+    plt.scatter(x_Dt, y_Dt, marker='x', color='purple', label='Misc Tomato')
+    
 
     plt.legend()
     plt.xlabel("QY Dark-adapted")
     plt.ylabel("QY Light Adapted")
+    plt.xlim(0.5, 0.85)
+    plt.ylim(0.35, 0.85)
     plt.title(f"Photosystem II Efficency Day {day}")
     
     plt.show()
