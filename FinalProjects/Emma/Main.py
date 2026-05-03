@@ -6,116 +6,193 @@ from matplotlib.animation import PillowWriter
 import os
 from matplotlib.patches import Rectangle
 
-n = 3
-grid_size = 8**n # Fix it so we will always have a multiple of 8 for our octree
-center = [grid_size/2, grid_size/2, grid_size/2] 
-max_time = 10
-N = 10 # Number of times time is subdivided
-patches = []
+n_array = [3, 4, 5]
+leaf_count_array = []
+total_heat_array = []
+slice_heat_array = []
+time_array_total = []
 
-dt = max_time / N # Step size for time
-t_array = np.linspace(0, max_time, N) # Time array for storm
+for n in n_array:
 
-# 
+    grid_size = 512 # Fix it so we will always have a multiple of 8 for our octree
+    center = [grid_size/2, grid_size/2, grid_size/2] 
+    max_time = 10
+    N = 10 # Number of times time is subdivided
+    res = 512
+    patches = []
+    leaf_count = []
+    time_array = []
+    recorded_frames = []
+    total_heat = []
+    slice_heat = []
 
-root = Storm_Functions.Node(center, grid_size, 0)
-Storm_Functions.build_tree(root, 3)
-leaves = Storm_Functions.get_leaves(root)
-print(len(leaves))
+    dt = max_time / N # Step size for time
+    t_array = np.linspace(0, max_time, N) # Time array for storm
 
-# Spawn a heat bubble at the center object of our leaf list. 
-leaves[1].T = 100
+    root = Storm_Functions.Node(center, grid_size, 0)
+    Storm_Functions.build_tree(root, 2)
 
-fig, ax = plt.subplots()
-scat = ax.scatter(
-    [0], [0],
-    c=[0],
-    cmap='hot',
-    vmin=0,
-    vmax=1
-)
+    hot_node, _ = Storm_Functions.find_node(root, center)
+    hot_node.T = 100
 
-ax.set_xlim(0, grid_size)
-ax.set_ylim(0, grid_size)
-ax.set_title("Storm Formation")
+    # Create scatter diagram
+    fig, ax = plt.subplots()
 
-def update(frame):
+    # Switched from scatter to 
+    heatmap = ax.imshow(np.zeros((res, res)), # Data for our slice
+                        extent=[0, grid_size, 0, grid_size], # Range we are plotting on
+                        origin='lower',
+                        cmap='hot', # for coloring,
+                        interpolation='bicubic') # For blur, see source on different possibilities)
 
-    # Find leaves of entire tree
-    leaves = Storm_Functions.get_leaves(root) # Find all the leaves for your node
+    ax.set_xlim(0, grid_size)
+    ax.set_ylim(0, grid_size)
+    ax.set_title("Storm Formation")
+    heatmap.set_clim(0, 1)
 
-    # Cache neighbors back into node so its easier to update
-    for leaf in leaves:
-        leaf.neighbors = Storm_Functions.get_neighbors(root, leaf)
+    def update(frame):
 
-    # Update physics (Main weather component)
+        # Check time
+        t = dt*frame
 
-    Storm_Functions.diffuse(leaves, alpha=0.1)
+        # Find leaves of entire tree
+        leaves = Storm_Functions.get_leaves(root) # Find all the leaves for your node
 
-    # Take a slice of our program
-    slice_z = center[2]
-    slice_thickness = grid_size * 0.1
+        # Cache neighbors back into node so its easier to update
+        for leaf in leaves:
+            leaf.neighbors = Storm_Functions.get_neighbors(root, leaf)
 
-    filtered = [leaf for leaf in leaves if abs(leaf.center[2] - slice_z) < slice_thickness]
+        # Update physics (Main weather component)
 
-    for p in patches:
-        p.remove()
-    patches.clear()
+        Storm_Functions.diffuse(leaves, alpha=0.1)
 
-    for leaf in filtered:
-        x, y = leaf.center[0], leaf.center[1]
-        size = leaf.size
+        # Take a slice of our program. Only want xy frame at z's center
+        slice_z = center[2]
+        slice_thickness = grid_size * 0.1
 
-        rect = Rectangle(
-            (x - size/2, y - size/2),
-            size,
-            size,
-            fill=False)
+        # Filter everything for our program
+        filtered = [leaf for leaf in leaves if abs(leaf.center[2] - slice_z) < slice_thickness]
 
-        ax.add_patch(rect)
-        patches.append(rect)
+        # Reset our patches for each iteration 
+        for p in patches:
+            p.remove()
+        patches.clear()
 
-    # Extract positions + temperature
-    xs = [leaf.center[0] for leaf in filtered]
-    ys = [leaf.center[1] for leaf in filtered]
-    temps = np.array([leaf.T for leaf in filtered])
+        grid = np.zeros((res, res)) # Total temperature
+        count = np.zeros((res, res)) # How many leaves are contributing to a pixel
 
-    if len(temps) > 0:
-        tmin, tmax = temps.min(), temps.max()
+        # For every node that is a leaf in our filtered slice, create a rectangle to track the octree
+        for leaf in filtered:
+            x, y = leaf.center[0], leaf.center[1]
+            T = leaf.T
+            size = leaf.size
+            weight = leaf.size**2 # Bigger leaves are more impactful
 
-        if tmax - tmin < 1e-12:
-            temps = np.zeros_like(temps)
-        else:
-            temps = (temps - tmin) / (tmax - tmin)
+            # Convert our components into our new grid to be plotted
+            # Convert leaf physical bounds to our grid so its cells instead of points
+            i_start = int((x - size/2) / grid_size * res)
+            i_end   = int((x + size/2) / grid_size * res)
+            j_start = int((y - size/2) / grid_size * res)
+            j_end   = int((y + size/2) / grid_size * res)
 
-    print("leaves:", len(leaves))
-    print("filtered:", len(filtered))
+            # Ensure indices stay within the grid boundaries
+            i_start, i_end = max(0, i_start), min(res, i_end)
+            j_start, j_end = max(0, j_start), min(res, j_end)
 
-    scat.set_offsets(np.column_stack((xs, ys)))
-    scat.set_array(np.array(temps))
+            # Fill the entire cell area instead of just one point
+            if i_start < i_end and j_start < j_end:
+                grid[j_start:j_end, i_start:i_end] += T * weight
+                count[j_start:j_end, i_start:i_end] += weight
 
-    print("T range:", np.min(temps), np.max(temps), "std:", np.std(temps))
+            # Create rectangle to be used by matplotlib patches
+            rect = Rectangle(
+                (x - size/2, y - size/2),
+                size,
+                size,
+                fill=False,
+                edgecolor='white',
+                linewidth=0.3,
+                alpha=0.3)
 
+            ax.add_patch(rect)
+            patches.append(rect)
 
-    # Refine/Subdivide. 
-    # Now that physics is done updating, check if anything has become a storm cell yet
-    for leaf in leaves:
-        if abs(leaf.T) > 0.2 and leaf.depth < n:
-            Storm_Functions.subdivide(leaf, n)
+        mask = count > 0 # Grab a mask of all the pixels that have more than one leaf
+        grid[mask] /= count[mask] # Average it out  
 
-    # Rebuild leaf list
-    leaves = Storm_Functions.get_leaves(root)
+        # Normalize our grid of temperatures
+        if np.max(grid) > 0:
+            grid = grid / np.max(grid)
 
-    # Now repeat for each timestep
-    return scat,
+        grid = np.sqrt(grid) # Boost contrast
+        heatmap.set_data(grid) # Give heatmap our data
 
-# Find file path 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-gif_path = os.path.join(script_dir, f"animation.gif")
+        # Refine/Subdivide. 
+        # Now that physics is done updating, check if anything has become a storm cell yet
+        for leaf in leaves:
+            if abs(leaf.T) > 0.4 and leaf.depth < n: # Replace this with your test
+                Storm_Functions.subdivide(leaf, n)
 
-# Create animation and save it as a gif titled "animation"
-ani = animation.FuncAnimation(fig, update, frames=200, interval=100, blit=False)
-ani.save(gif_path, writer=PillowWriter(fps=20), savefig_kwargs={"facecolor": "black"})
+        # Rebuild leaf list
+        leaves = Storm_Functions.get_leaves(root)
+        print(len(leaves))
+
+        if frame not in recorded_frames:
+            leaf_count.append(len(leaves))
+            time_array.append(t)
+            total_heat.append(sum(leaf.T * leaf.size** 3 for leaf in leaves))
+            slice_heat.append(sum(leaf.T * leaf.size**2 for leaf in filtered))
+            recorded_frames.append(frame)
+
+        # Now repeat for each timestep
+        return heatmap
+
+    # Find file path 
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    gif_path = os.path.join(script_dir, f"animation_{n}.gif")
+
+    # Create animation and save it as a gif titled "animation"
+    ani = animation.FuncAnimation(fig, update, frames=300, interval=100, blit=False)
+    ani.save(gif_path, writer=PillowWriter(fps=20), savefig_kwargs={"facecolor": "black"})
+    plt.show()
+
+    time_array_total.append(time_array)
+    total_heat_array.append(total_heat)
+    slice_heat_array.append(slice_heat)
+    leaf_count_array.append(leaf_count)
+
+fig1, ax1 = plt.subplots()
+fig2, ax2 = plt.subplots()
+fig3, ax3 = plt.subplots()
+
+for time, leaf, total, slice, sub in zip(time_array_total, leaf_count_array, total_heat_array, slice_heat_array, n_array):
+
+    leaf = np.array(leaf)
+    total = np.array(total)
+    slice = np.array(slice)
+
+    leaf_norm = leaf / leaf[0]
+    total_norm = total / total[0]
+    slice_norm = slice / np.max(slice)
+
+    ax1.plot(time, leaf_norm, label=f"Depth: {sub}")
+    ax2.plot(time, total_norm, label=f"Depth: {sub}")
+    ax3.plot(time, slice_norm, label=f"Depth: {sub}")
+
+ax1.set_xlabel("Time")
+ax1.set_ylabel("Leaf Count")
+ax1.set_title("Leaf Count vs Time")
+ax1.set_yscale('log')
+
+ax2.set_xlabel("Time")
+ax2.set_ylabel("Total Heat")
+ax2.set_title("Total Heat vs Time")
+
+ax3.set_xlabel("Time")
+ax3.set_ylabel("Slice Heat")
+ax3.set_title("Slice Heat vs Time")
+
+ax1.legend()
+ax2.legend()
+ax3.legend()
 plt.show()
-    
-
