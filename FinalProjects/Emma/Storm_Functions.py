@@ -207,8 +207,10 @@ def get_neighbors(root, node):
 
 def diffuse(leaves, alpha=0.1):
     new_T = {}
+    
     for node in leaves:
         neighbor_temps = []
+
         # Use the cached neighbors instead of looping through all leaves
         for key in ['xm', 'xp', 'ym', 'yp', 'zm', 'zp']:
             nb = node.neighbors.get(key)
@@ -223,6 +225,8 @@ def diffuse(leaves, alpha=0.1):
 
     for node in leaves:
         node.T = new_T[id(node)]
+
+
 def build_tree(node, max_depth):
     if node.depth >= max_depth:
         return
@@ -232,3 +236,4 @@ def build_tree(node, max_depth):
     for child in node.children:
         if child is not None:
             build_tree(child, max_depth)
+

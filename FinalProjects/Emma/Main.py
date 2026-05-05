@@ -5,6 +5,7 @@ from matplotlib import animation
 from matplotlib.animation import PillowWriter
 import os
 from matplotlib.patches import Rectangle
+from mpl_toolkits.mplot3d import Axes3D
 
 n_array = [3, 4, 5]
 leaf_count_array = []
@@ -47,8 +48,10 @@ for n in n_array:
 
     ax.set_xlim(0, grid_size)
     ax.set_ylim(0, grid_size)
-    ax.set_title("Storm Formation")
+    ax.set_title("Heat Dispersion")
     heatmap.set_clim(0, 1)
+
+    # --------- 2D Updater ------------
 
     def update(frame):
 
@@ -57,10 +60,6 @@ for n in n_array:
 
         # Find leaves of entire tree
         leaves = Storm_Functions.get_leaves(root) # Find all the leaves for your node
-
-        # Cache neighbors back into node so its easier to update
-        for leaf in leaves:
-            leaf.neighbors = Storm_Functions.get_neighbors(root, leaf)
 
         # Update physics (Main weather component)
 
@@ -133,6 +132,9 @@ for n in n_array:
             if abs(leaf.T) > 0.4 and leaf.depth < n: # Replace this with your test
                 Storm_Functions.subdivide(leaf, n)
 
+                # Cache neighbors back into node so its easier to update
+                leaf.neighbors = Storm_Functions.get_neighbors(root, leaf)
+
         # Rebuild leaf list
         leaves = Storm_Functions.get_leaves(root)
         print(len(leaves))
@@ -146,6 +148,81 @@ for n in n_array:
 
         # Now repeat for each timestep
         return heatmap
+    
+    # --------- 3D Updater ------------
+
+    fig3D = plt.figure()
+    ax3D = fig.add_subplot(111, projection='3d')
+
+    x = np.linspace(0, res, res)
+    y = np.linspace(0, res, res)
+    X, Y = np.meshgrid(x, y)
+
+    def update_3D(frame):
+
+        ax3D.clear()
+        ax3D.set_zlim(0, 1)
+        # Check time
+        t = dt*frame
+
+        # Find leaves of entire tree
+        leaves = Storm_Functions.get_leaves(root) # Find all the leaves for your node
+
+        # Update physics
+        Storm_Functions.diffuse(leaves, alpha=0.1)
+
+        grid = np.zeros((res, res)) # Total temperature
+        count = np.zeros((res, res)) # How many leaves are contributing to a pixel
+
+        for leaf in leaves:
+            x, y = leaf.center[0], leaf.center[1]
+            T = leaf.T
+            size = leaf.size
+            weight = leaf.size**2 # Bigger leaves are more impactful
+
+            # Convert our components into our new grid to be plotted
+            # Convert leaf physical bounds to our grid so its cells instead of points
+            i_start = int((x - size/2) / grid_size * res)
+            i_end   = int((x + size/2) / grid_size * res)
+            j_start = int((y - size/2) / grid_size * res)
+            j_end   = int((y + size/2) / grid_size * res)
+
+            # Ensure indices stay within the grid boundaries
+            i_start, i_end = max(0, i_start), min(res, i_end)
+            j_start, j_end = max(0, j_start), min(res, j_end)
+
+            # Fill the entire cell area instead of just one point
+            if i_start < i_end and j_start < j_end:
+                grid[j_start:j_end, i_start:i_end] += T * weight
+                count[j_start:j_end, i_start:i_end] += weight
+
+
+        mask = count > 0 # Grab a mask of all the pixels that have more than one leaf
+        grid[mask] /= count[mask] # Average it out  
+
+        # Normalize our grid of temperatures
+        if np.max(grid) > 0:
+            grid = grid / np.max(grid)
+
+        grid = np.sqrt(grid) # Boost contrast
+        plot_surface = ax3D.plot_surface(X, Y, grid, cmap='hot', edecolors=None)
+
+        # Refine/Subdivide. 
+        # Now that physics is done updating, check if anything has become a storm cell yet
+        for leaf in leaves:
+            if abs(leaf.T) > 0.4 and leaf.depth < n: # Replace this with your test
+                Storm_Functions.subdivide(leaf, n)
+
+                # Cache neighbors back into node so its easier to update
+                leaf.neighbors = Storm_Functions.get_neighbors(root, leaf)
+
+        # Rebuild leaf list
+        leaves = Storm_Functions.get_leaves(root)
+        print(len(leaves))
+
+        # Now repeat for each timestep
+        return plot_surface
+    
 
     # Find file path 
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -153,6 +230,15 @@ for n in n_array:
 
     # Create animation and save it as a gif titled "animation"
     ani = animation.FuncAnimation(fig, update, frames=300, interval=100, blit=False)
+    ani.save(gif_path, writer=PillowWriter(fps=20), savefig_kwargs={"facecolor": "black"})
+    plt.show()
+
+    # Find file path 
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    gif_path = os.path.join(script_dir, f"animation_3D{n}.gif")
+
+    # Create animation and save it as a gif titled "animation"
+    ani = animation.FuncAnimation(fig, update_3D, frames=20, interval=100, blit=False)
     ani.save(gif_path, writer=PillowWriter(fps=20), savefig_kwargs={"facecolor": "black"})
     plt.show()
 
