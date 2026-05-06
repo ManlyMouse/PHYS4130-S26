@@ -81,18 +81,6 @@ def subdivide(node, max_depth):
                 child_index += 1
 
 
-def collapse(node, n):
-
-    '''
-            Takes a node and collapses it back into a larger grid. Values are averaged 
-
-            Args:
-                
-
-            Returns:
-                
-        '''
-
 
 def find_node(root, point):
     '''
@@ -206,6 +194,8 @@ def get_neighbors(root, node):
 
 
 def diffuse(leaves, alpha=0.1):
+
+    
     new_T = {}
     
     for node in leaves:
