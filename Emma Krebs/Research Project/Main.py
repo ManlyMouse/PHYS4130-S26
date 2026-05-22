@@ -2,6 +2,10 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import statsmodels.api as sm
+from statsmodels.formula.api import ols
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
 
 def organize_boxes(data):
     H_Box = []
@@ -75,6 +79,12 @@ for file_name in files:
             }
             data_array.append(data)
 
+        df_raw = pd.DataFrame(data_array)
+
+        print(f"\n--- Raw Data Day {date[day]} ---")
+        print(df_raw.to_string(index=False))
+        df_raw.to_csv('data_raw.csv', index=False)
+
         H, P, G, D = organize_boxes(data_array)
         groups = {'10%': H, '100%': P, '50%': G, 'Misc': D}
 
@@ -127,6 +137,7 @@ for file_name in files:
     plt.show()
 
     day += 1
+
 
 for key in results:
     plt.errorbar(
@@ -196,6 +207,7 @@ for key in results:
 df = pd.DataFrame(table_data)
 
 print(df.to_string(index=False))
+df.to_csv('data_table_raw.csv', index=False)
 
 # --------------- Table for Averaged mean ---------------------------
 print()
@@ -232,10 +244,11 @@ df_avg['Treatment'] = pd.Categorical(
 )
 
 df_avg = df_avg.sort_values('Treatment')
+intensities = [48, 242, 299, 484]
 
 for key in results:
     plt.errorbar(
-        df_avg['Treatment'],
+        intensities,
         df_avg['Basil Avg QY'],
         yerr=df_avg['Basil Std'],
         marker='o',
@@ -245,7 +258,7 @@ for key in results:
 
 for key in results:
     plt.errorbar(
-        df_avg['Treatment'],
+        intensities,
         df_avg['Tomato Avg QY'],
         yerr=df_avg['Tomato Std'],
         marker='o',
@@ -261,3 +274,33 @@ plt.title("PSII for Treatments")
 plt.ylim(0, 0.9)
 
 plt.show()  
+
+anova_data = []
+
+for key in results:
+    for plant in ['Basil', 'Tomato']:
+        for value in results[key][plant][1:]:   # Days 2-4 only
+            anova_data.append({
+                'QY': value,
+                'Species': plant,
+                'Treatment': key
+            })
+
+df_anova = pd.DataFrame(anova_data)
+
+model = ols(
+    'QY ~ C(Species) + C(Treatment) + C(Species):C(Treatment)',
+    data=df_anova
+).fit()
+
+anova_table = sm.stats.anova_lm(model, typ=2)
+print(anova_table)
+anova_table.to_csv('anova.csv', index=False)
+
+tukey = pairwise_tukeyhsd(
+    endog=df_anova['QY'],
+    groups=df_anova['Treatment'],
+    alpha=0.05
+)
+
+print(tukey)
