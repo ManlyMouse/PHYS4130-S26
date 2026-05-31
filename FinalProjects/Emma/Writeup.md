@@ -1,57 +1,32 @@
 ---
 meta:
     author: Emma Krebs
-    topic: 3D Atmospheric Fluid Simulation using an Eulerian Octree to Model Supercell Formation
+    topic: 3D Atmospheric Fluid Simulation using an Eulerian Octree to Model Heat Diffusion
     course: TN Tech PHYS4130
     term: Spring 2026
 ---
 
-# 3D Atmospheric Fluid Simulation using an Eulerian Octree to Model Supercell Formation
+# 3D Atmospheric Fluid Simulation using an Eulerian Octree to Model Heat Diffusion
+
+## Introduction of Atmospheric Modeling and Data Management
 
 -Introduce topic, why we should care/physics of atmospheric modeling, and why different storage of data is important in computational problems. 
 
-
-## Theory of Storm Formation
-
-### Storms and Longevity 
-
--Talk about storms and what factors go into their formation and longevity ie why longer storms happen
--What are the main parameters we should worry about (temperature, pressure, vorticity, and velocity)
-
-[Image of storm longevity from book source]
-
-### Vorticity 
--Huge section with PDEs, poisson's solution, and more. Mostly math section
+## Eulerian Octrees
 
 ## Summary of Code
--Really basic overview of code, like what you did with diffusion. Lead into data
 
-### Data Storage 
+The code is divided into three main files: OctreeFunctions.py, StormFunctions.py, and Main.py. OctreeFunctions contains all the function definitions for the management of the octree and the class object for the spatial nodes. StormFunctions contains two heat equations from different iterations of this project. The first is not a closed system and has fluctuating heat, meaning the initial results were not a conserved system for heat diffusion. The second heat function is the improved iteration that, although not perfect, does maintain a more accurate conserved system then the first. The Main.py imports the previous files, initiates a hot spot somewhere in space, and updates the octree. Additionally, it creates the graphs seen later for measuring octree growth and total heat. 
 
--Talk about Eulerian Octree -- why did you choose Eulerian over lagrangian. Why did you decide to do an octree (neighbor lookup/quicker access to important information)
--Information about your node and cell classes. 
+### OctreeFunctions
 
-### Important Function Definitions (Updaters)
 
-### Main.py
 
-## Results
+### StormFunctions
 
-### Produced Animation
+### Main
 
-[Animations for a couple different storm formations]
-
-### Numerical Comparison
-
-Important results:
-
--maximum vorticity magnitude
--updraft velocity peak
--spatial storm radius over time
-
--storm intensity growth rate
--structural stability
--simulated longevity
+## Resulting Animations and Graphs
 
 ## Conclusion
 
@@ -59,15 +34,13 @@ Important results:
 -Restate important points of result
 -State importance of data management 
 
-### 
-
 ## Languages, Libraries, Lessons Learned
 
-The main language was python and I used the libraries numpy, matplotlib, and os. I developed my skills with using objects and classes in python and creating images and animations for aggregations. In particular, I learned how to use the os to more effectively store the .gifs and .pngs. I also learned how to do octrees, but they unfortunately did not end up working for this particular program (but they might be useful for my project over the summer!). On that note, ignore the Code_Graveyard. It is filled with ghosts of past aggregate lives. 
+
 
 ## Timekeeping
 
-As of 4/23/26: 36 hours
+As of 4/23/26: 38 hours
 
 ## Soucres
 
