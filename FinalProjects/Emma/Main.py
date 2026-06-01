@@ -164,4 +164,48 @@ for n in n_array:
     # Create animation and save it as a gif titled "animation"
     ani = animation.FuncAnimation(fig, update, frames=300, interval=100, blit=False)
     ani.save(gif_path, writer=PillowWriter(fps=20), savefig_kwargs={"facecolor": "black"})
-    plt.show()
+
+    leaf_count_array.append(leaf_count)
+    total_heat_array.append(total_heat)
+    slice_heat_array.append(slice_heat)
+    time_array_total.append(time_array)
+
+    plt.close(fig)
+
+
+fig1, ax1 = plt.subplots()
+fig2, ax2 = plt.subplots()
+fig3, ax3 = plt.subplots()
+
+for time, leaf, total, slice, sub in zip(time_array_total, leaf_count_array, total_heat_array, slice_heat_array, n_array):
+
+    leaf = np.array(leaf)
+    total = np.array(total)
+    slice = np.array(slice)
+
+    leaf_norm = leaf / leaf[0]
+    total_norm = total / total[0]
+    slice_norm = slice / np.max(slice)
+
+    ax1.plot(time, leaf_norm, label=f"Depth: {sub}")
+    ax2.plot(time, total_norm, label=f"Depth: {sub}")
+    ax3.plot(time, slice_norm, label=f"Depth: {sub}")
+
+ax1.set_xlabel("Time")
+ax1.set_ylabel("Leaf Count")
+ax1.set_title("Leaf Count vs Time")
+ax1.set_yscale('log')
+
+ax2.set_xlabel("Time")
+ax2.set_ylabel("Total Heat")
+ax2.set_title("Total Heat vs Time")
+
+ax3.set_xlabel("Time")
+ax3.set_ylabel("Slice Heat")
+ax3.set_title("Slice Heat vs Time")
+
+ax1.legend()
+ax2.legend()
+ax3.legend()
+plt.show()
+
