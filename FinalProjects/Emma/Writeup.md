@@ -38,7 +38,23 @@ Fig (FIX). Octree development for nonconserved heat diffusion given a maximum de
 
 Note that all of these are on the same time scale, meaning that the number of nodes effects the rate of diffusion. We can see more about this in the following three graphs:
 
-<img src="ImagesWriteup/LeafvsTime.png" width="325"> <img src="ImagesWriteup/SliceHeatvsTime.png" width="325"> <img src="ImagesWriteup/TotalHeatvsTime.png" width="325">
+<img src="ImagesWriteup/LeafvsTime.png" width="325"> <img src="ImagesWriteup/SliceHeatvsTIme.png" width="325"> <img src="ImagesWriteup/TotalHeatvsTime.png" width="325">
+
+Fig (FIX). Nonconserved heat diffusion for three depths. The first graph represents the adaptability of the octree and how many leaf nodes there are as the octree develops. The second represents the slice where the hot node is introduced and how much heat is in that slice as it diffuses. Finally, the last graph contains the total heat in the system. As we can see, it is not conserved and increases over time with it even having differences between the depths (most likely because the calculation depending on the size of the node). 
+
+Now we can look at the conserved heat diffusion equation. The colors here are represented differently from the previous program. Instead, these are maximized on the current maximum temperature. As the heat spreads and reaches equilibirum, they should all become the same bright yellow/white color since they all have a similar max temperature.
+
+<img src="ImagesWriteup/animation_3.gif" width="325"> <img src="ImagesWriteup/animation_4.gif" width="325"> <img src="ImagesWriteup/animation_5.gif" width="325">
+
+Fig (FIX). Octree development for conserved heat diffusion given a maximum depth of 3, 4, and 5 for the octree. Colors are based on a normalization of the maximum 
+
+<img src="ImagesWriteup/LeafCountvsTimeConserved.png" width="500"> <img src="ImagesWriteup/SliceHeatvsTimeConserved.png" width="500"> 
+
+Fig (FIX).
+
+<img src="ImagesWriteup/TotalEnergyvsTimeConserved.png" width="500"> <img src="ImagesWriteup/CloseUpConserved.png" width="500">
+
+Fig (FIX). 
 
 ## Conclusion
 
