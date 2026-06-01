@@ -9,7 +9,7 @@ meta:
 # 3D Atmospheric Fluid Simulation using an Eulerian Octree to Model Heat Diffusion
 
 <p align="center">
-  <img src="ImagesWriteup/ICON.gif" width="800">
+  <img src="ImagesWriteup/ICON.gif" width="600">
 </p>
 
 Figure 1. From the Max-Planck-Institut climate model ICON. Wind speed near the surface simulated with 1 km resolution. Zooming reveals fine structures, like the inprint of the underlying land, from convective activity.
