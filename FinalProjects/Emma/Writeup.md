@@ -12,7 +12,16 @@ meta:
 
 Atmospheric models are mathematical frameworks used to simulate and predict the behavior of Earth's atmosphere using primitive equations, which are a set of nonlinear partial differential equations that are used to approximate global atmospheric flow. They consist of three balance equations:
 
+1. The continuity equation: Representing the conservation of mass.
+2. Conservation of Momentum: Consisting of a form of the Navier–Stokes equations that describe hydrodynamical flow on the surface of a sphere under the assumption that         vertical motion is much smaller than horizontal motion (hydrostasis) and that the fluid layer depth is small compared to the radius of the sphere.
 
+$$
+
+3. Thermal Energy Equation: Relating the overall temperature of the system to heat sources and sinks. 
+
+[Definitions from source one, Wiki of Primitive Equations]
+
+Atmospheric models supplement these equations with the natural proccesses that affect weather. For example, this could include turbulent diffusion, radiation, moist processes (clouds and precipitation), heat exchange, soil, vegetation, surface water, the kinematic effects of terrain, and convection. This can make an accurate computational model for atmospheric modeling incredibly complex and taxing on even supercomputers. 
 
 Atmospheric Models are complex simulations of millions of data points. Working in 3D increases this complexity, so we need smart data structures to be able to run these simulations. Although grids and arrays in Python can outperform some data structures when there is less data to manage, these structures eventually slow down the processing time as memory usage increases. For 3D space, the number of points to keep track of is $N^3$. This isn’t the best use of our memory if we are only interested in regions of activity (ie, storm formation, intense wind shear, etc). We need a data structure that stores all of this information, isn’t computationally taxing, and can adapt to activity. This is where octrees become useful. 
 
@@ -86,6 +95,8 @@ As of 5/31/26: 44 hours
 ### Websites
 
 https://en.wikipedia.org/wiki/Primitive_equations (Prinitive Equation definitions used in the introduction)
+
+https://staff.cgd.ucar.edu/islas/teaching/2_Equations.pdf (Equation for primite equation)
 
 https://en.wikipedia.org/wiki/Octree (Wiki for Octree)
 
