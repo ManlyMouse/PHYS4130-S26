@@ -24,11 +24,17 @@ The code is divided into three main files: OctreeFunctions.py, StormFunctions.py
 
 ### StormFunctions
 
+There are two heat diffusion functions within this file: diffuse and diffuse_conservation. Diffuse is the first iteration of the code 
+
 ### Main
 
 ## Resulting Animations and Graphs
 
+There are various animations and graphs resulting from this project. We will beging with the first iteration of the project where the heat diffusion was not conserved. 
+
 ## Conclusion
+
+There are many areas to improve with this code to create a better atmospheric model. Although they were not implemented here, various additional storm functions could be added without much change to Main.py and OctreeFunctions.py to make a much more accurate model. Some of the possible additional charactersitics involved with storms (some of which were previously mentioned in the introduction) are vorticity, wind speed, and pressure. 
 
 -Areas to improve code
 -Restate important points of result
@@ -36,11 +42,11 @@ The code is divided into three main files: OctreeFunctions.py, StormFunctions.py
 
 ## Languages, Libraries, Lessons Learned
 
-
+This project let me investigate data structures and the very tip of the iceberg for atmospheric modeling/fluid dynamics. I was able to read some really cool papers of people's attempts on improving these simulations (seen in sources) and how data structures contribute to a good model. In particular, adapative octrees let me practice a type of data organization using object classes which I haven't been able to use since CS 1310. Getting to revisit that was fun. However, the adaptability also increased the difficulty, so although this was a computational physics project it definietely favoured the computation aspect. Most of the timekeeping was dedicated to constructing the octree and bug fixing the node updates and trying to figure out the adaptability. A semi-new library I used was matplotlib's patches, which was mostly there to help me visualize the octree adapting. 
 
 ## Timekeeping
 
-As of 4/23/26: 38 hours
+As of 5/31/26: 44 hours
 
 ## Soucres
 
