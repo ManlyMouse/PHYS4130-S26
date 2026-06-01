@@ -16,7 +16,7 @@ meta:
 
 ## Summary of Code
 
-The code is divided into three main files: OctreeFunctions.py, StormFunctions.py, and Main.py. OctreeFunctions contains all the function definitions for the management of the octree and the class object for the spatial nodes. StormFunctions contains two heat equations from different iterations of this project. The first is not a closed system and has fluctuating heat, meaning the initial results were not a conserved system for heat diffusion. The second heat function is the improved iteration that, although not perfect, does maintain a more accurate conserved system then the first. The Main.py imports the previous files, initiates a hot spot somewhere in space, and updates the octree. Additionally, it creates the graphs seen later for measuring octree growth and total heat. 
+The code is divided into three main files: OctreeFunctions.py, StormFunctions.py, and Main.py. OctreeFunctions contains all the function definitions for the management of the octree and the class object for the spatial nodes. StormFunctions contains two heat equations from different iterations of this project. The first is not a closed system and has fluctuating heat, meaning the initial results were not a conserved system for heat diffusion. The second heat function is the improved iteration that, although not perfect, does maintain a more accurate conserved system then the first. The Main.py imports the previous files, initiates a hot spot somewhere in space, and updates the octree. Additionally, it creates the graphs seen later for measuring octree growth and total heat. Main.py was ran three times with a maximum octree depth of 3, 4, and 5, meaning they could not subdivide past that depth. 
 
 ### OctreeFunctions
 
@@ -30,7 +30,9 @@ There are two heat diffusion functions within this file: diffuse and diffuse_con
 
 ## Resulting Animations and Graphs
 
-There are various animations and graphs resulting from this project. We will beging with the first iteration of the project where the heat diffusion was not conserved. 
+There are various animations and graphs resulting from this project. We will beging with the first iteration of the project where the heat diffusion was not conserved. We can see the following three animations for n=3, n=4, n=5:
+
+
 
 ## Conclusion
 
@@ -57,7 +59,9 @@ As of 5/31/26: 44 hours
 ### Websites
 
 https://en.wikipedia.org/wiki/Octree (Wiki for Octree)
+
 https://www.osti.gov/servlets/purl/1008123#:~:text=Computational%20simulation%20must%20often%20be,the%20mesh%20generation%20code%2C%20CUBIT. (Computational Information for Eulerian Octree)
+
 https://gmd.copernicus.org/articles/17/6401/2024/ (Adapative Mesh Octree)
 
 ### Books
