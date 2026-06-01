@@ -25,7 +25,7 @@ Atmospheric models supplement these equations with additional factors of natural
 
 ## Eulerian Octree
 
-
+There are now two words we need to define for our data structure: Eulerian and Octree. Eulerian describes one of two different perspectives of the code we can have. Eulerian is the idea that our data structure cares about what is flowing through it rather than tracking what is moving. In other words, our data structure will be a fixed region of interest and we will measure what moves through it. Lagrangian, the second perspective, is tracking individual objects and how they move through space. The Lagrangian perspective is what we used for the previous diffusion project. To help clarify this idea, consider the figure below. 
 
 ## Summary of Code
 
