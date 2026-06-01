@@ -8,6 +8,12 @@ meta:
 
 # 3D Atmospheric Fluid Simulation using an Eulerian Octree to Model Heat Diffusion
 
+<p align="center">
+  <img src="ImagesWriteup/ICON.gif" width="800">
+</p>
+
+Figure 1. From the Max-Planck-Institut climate model ICON. Wind speed near the surface simulated with 1 km resolution. Zooming reveals fine structures, like the inprint of the underlying land, from convective activity.
+
 ## Introduction of Atmospheric Modeling and Data Management
 
 Atmospheric models are mathematical frameworks used to simulate and predict the behavior of Earth's atmosphere. It uses primitive equations, which are a set of nonlinear partial differential equations that are used to approximate global atmospheric flow. They consist of three balance equations:
