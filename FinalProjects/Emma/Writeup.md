@@ -10,9 +10,14 @@ meta:
 
 ## Introduction of Atmospheric Modeling and Data Management
 
--Introduce topic, why we should care/physics of atmospheric modeling, and why different storage of data is important in computational problems. 
+Atmospheric models are mathematical frameworks used to simulate and predict the behavior of Earth's atmosphere using primitive equations, which are a set of nonlinear partial differential equations that are used to approximate global atmospheric flow. They consist of three balance equations:
 
-## Eulerian Octrees
+
+
+Atmospheric Models are complex simulations of millions of data points. Working in 3D increases this complexity, so we need smart data structures to be able to run these simulations. Although grids and arrays in Python can outperform some data structures when there is less data to manage, these structures eventually slow down the processing time as memory usage increases. For 3D space, the number of points to keep track of is $N^3$. This isn’t the best use of our memory if we are only interested in regions of activity (ie, storm formation, intense wind shear, etc). We need a data structure that stores all of this information, isn’t computationally taxing, and can adapt to activity. This is where octrees become useful. 
+
+
+-Introduce topic, why we should care/physics of atmospheric modeling, and why different storage of data is important in computational problems. 
 
 ## Summary of Code
 
@@ -79,6 +84,8 @@ As of 5/31/26: 44 hours
 ## Soucres
 
 ### Websites
+
+https://en.wikipedia.org/wiki/Primitive_equations (Prinitive Equation definitions used in the introduction)
 
 https://en.wikipedia.org/wiki/Octree (Wiki for Octree)
 
