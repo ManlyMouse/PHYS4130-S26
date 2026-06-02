@@ -302,7 +302,7 @@ Fig 10. This is the total heat vs time for the conserved heat. The image on the 
 
 ## Conclusion
 
-
+Starting with the number of leaves, we can see 
 
 There are many areas to improve with this code to create a better atmospheric model. Although they were not implemented here, various additional storm functions could be added without much change to Main.py and Octree_Functions.py to make a much more accurate model. Some of the possible additional charactersitics involved with storms (some of which were previously mentioned in the introduction) are vorticity, wind speed, and pressure. Although these would help achieve the original intent of this project, it was decided to focus on heat diffusion because of three reasons: 1) time constraint, 2) measurability and consistency, and 3) node borders. 
 
