@@ -326,7 +326,7 @@ As of 5/31/26: 44 hours
 
 https://mpimet.mpg.de/en/research/modeling (ICON Max-Planck)
 
-https://en.wikipedia.org/wiki/Primitive_equations (Prinitive Equation definitions used in the introduction)
+https://en.wikipedia.org/wiki/Primitive_equations (Primitive Equation definitions used in the introduction)
 
 https://staff.cgd.ucar.edu/islas/teaching/2_Equations.pdf (Equation for primite equation)
 
@@ -335,6 +335,54 @@ https://en.wikipedia.org/wiki/Octree (Wiki for Octree)
 https://www.osti.gov/servlets/purl/1008123#:~:text=Computational%20simulation%20must%20often%20be,the%20mesh%20generation%20code%2C%20CUBIT. (Computational Information for Eulerian Octree)
 
 https://gmd.copernicus.org/articles/17/6401/2024/ (Adapative Mesh Octree)
+
+https://www.osti.gov/servlets/purl/1008123#:~:text=Computational%20simulation%20must%20often%20be,the%20mesh%20generation%20code%2C%20CUBIT (Parallel Octree-Based Hexahedral Mesh Generation for Eulerian to Lagrangian Conversion)
+
+https://gmd.copernicus.org/articles/17/6401/2024/ (Physics-motivated cell-octree adaptive mesh refinement in the Vlasiator 5.3 global hybrid-Vlasov code)
+
+https://www.cs.jhu.edu/~misha/ReadingSeminar/Papers/Flynn18.pdf (Paper on fluid dynamics using an octree) (Really cool paper)
+
+https://en.wikipedia.org/wiki/Atmospheric_model (Wiki for Atmospheric model)
+
+https://en.wikipedia.org/wiki/Color_quantization (Color Quantization)
+
+### Other Misc Octree Sources I used 
+
+https://tonybaloney.github.io/posts/why-is-python-so-slow.html
+
+https://cemrehancavdar.com/2026/03/10/optimization-ladder/ 
+
+https://eli.thegreenplace.net/2018/slow-and-fast-methods-for-generating-random-integers-in-python/ 
+
+https://en.wikipedia.org/wiki/Octree
+
+https://vpython.org/
+
+https://www.gut-wirtz.de/dla/improvements.html#:~:text=Outside%20the%20release%20radius%20we,the%20cluster%20during%20one%20step. 
+
+https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.cKDTree.html 
+
+https://pypi.org/project/pyoctree/ 
+
+https://github.com/jcranch/octrees/blob/master/octrees/octrees.py
+
+https://medium.com/data-science/neighborhood-analysis-kd-trees-and-octrees-for-meshes-and-point-clouds-in-python-19fa96527b77 
+
+https://eisenwave.github.io/voxel-compression-docs/svo/svo.html#:~:text=Best%20Case%20for%20Regular%20Octrees,best%20case%20is%20rarely%20encountered. 
+
+https://delimitry.blogspot.com/2016/02/octree-color-quantizer-in-python.html#:~:text=As%20each%20leaf%20has%20the,Delimitry%20at%204:14%20PM 
+
+https://www.geeksforgeeks.org/dsa/octree-insertion-and-searching/ 
+
+https://www.eskimo.com/~scs/cclass/int/sx4ab.html#:~:text=The%20&%20operator%20performs%20a%20bitwise,exclusive%2DOR%20on%20two%20integers. 
+
+https://vispy.org/api/vispy.scene.visuals.html
+
+https://towardsdatascience.com/neighborhood-analysis-kd-trees-and-octrees-for-meshes-and-point-clouds-in-python-19fa96527b77/ 
+
+https://markjstock.org/dla3d/ 
+
+https://discussions.unity.com/t/octree-subdivision-problem-solved/405500 
 
 ### Books
 
