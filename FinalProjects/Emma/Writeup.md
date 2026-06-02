@@ -117,7 +117,7 @@ Octree_Functions contains all the main functions for the octree to initalize, su
         }
 ```
 
-The most important definition in the entire project is the object class node. This object initializes with the center of itself, the size of the node in space, and the current depth it is at. It also initalizes with the characteristic of it being a leaf node, which eventually changes later when it subdivides, and an array of nones that will be filled with its children nodes. In addition to these parameters, it also stores data for several environmental parameters (but since we are focusing on only temperature, only self.T is used). Most importantly, it contains a list of its current neighbors to make neighbor lookup significantly more efficient. 
+The most important definition in the entire project is the object class node. This object initializes with a center, the size of the node in space, and the current depth it is at. It also initalizes with the characteristic of a leaf node, which eventually changes later when it subdivides, and an array of nones that will be filled with its children nodes. In addition to these parameters, it stores data for several environmental parameters (but since we are focusing on only temperature, only self.T is used). Most importantly, it contains a list of its current neighbors to make neighbor lookup significantly more efficient. 
 
 ```python
 if node.leaf != True or node.depth >= max_depth:
@@ -150,7 +150,7 @@ if node.leaf != True or node.depth >= max_depth:
                 child_index += 1
 ```
 
-The second most important function is the function subdivide. This is the function that is creating the structure of the tree. If a node is not a leaf or a node is at the maximum depth, it will not subdivide. If it is a leaf node and it isn't at the maximum depth, then the node can be subdivided and given child nodes. Eight new nodes are created inside of the parent node's spatial region and their centers and size are calculated. The children nodes inherit the parent's parameters and are then assigned to the parent's child array. The subdivision is now complete.
+The second most important function is the function subdivide. This is the function that is creating the structure of the tree. If a node is not a leaf or is at the maximum depth, it will not subdivide. If it is a leaf node and it isn't at the maximum depth, then the node can be subdivided and given child nodes. Eight new nodes are created inside of the parent node's spatial region and their centers and size are calculated. The children nodes inherit the parent's parameters and are then assigned to the parent's child array. The subdivision is now complete.
 
 ```python
 node = root
@@ -179,9 +179,9 @@ node = root
     return node, value
 ```
 
-A useful function that is frequently used is the find_node definition. Given a point in space it uses a color quantization algorthim that is originally used for a digital image process that reduces the number of distinct colors used in an image, usually with the intention that the new image should be as visually similar as possible to the original image. The formula in rgb is written as 4r + 2g + b. However, in this case we will use the bitwise or to organize any point using the positive and negative three spatial directions to get an index value representing the child node it is in. An example is as follows: 
+A useful function that is frequently used is the find_node definition. Given a point in space it uses a color quantization algorthim that is typically used for digital image processing. This algorithm reduces the number of distinct colors used in an image, usually with the intention that the new image should be as visually similar as possible to the original image. The formula in rgb is written as 4r + 2g + b. However, in this case we will use the 'bitwise or (written as | )' to organize any point using the positive and negative three spatial directions to get an index value representing the child node it is in. An example is as follows: 
 
-Say we have a point where all three of its coordinates are positives. Our value starts at 0, so after the first if statement we have 0 |= 4 which is 4. Then, the next if statement is true such that we now have 4 |= 2 which is 6. Finally, the last if statement has 6 |= 1 which is 7. Thefore, the child node with index 7 in the parent's child array has our point. Recursively doing this until gitting a leaf node will get the exact node the point is in. 
+Say we have a point where all three of its coordinates are positives. Our value starts at 0, so after the first if statement we have 0 |= 4, which is 4. Then, the next if statement is true such that we now have 4 |= 2, which is 6. Finally, the last if statement has 6 |= 1, which is 7. Thefore, the child node with index 7 in the parent's child array has our point. Recursively doing this until gitting a leaf node will get the exact node the point is in. 
 
 In addition to these three, there are some less complicated functions. The definition get_leaves finds all the current leaf nodes in the octree, get_neighbors will probe the surrounding six directions that touch the face of the cell to find a node's neighbors, and rebuild_neighbors will take a node and update its current neighbor list.  
 
@@ -274,7 +274,7 @@ After cycling through the timespan, the number of leaves, the total energy in th
 
 ## Resulting Animations and Graphs
 
-There are various animations and graphs resulting from this project. We will beging with the first iteration of the project where the heat diffusion was not conserved. We can see the following three animations for n=3, n=4, n=5 where the color represents the normalized difference in temperature:
+We will begin with the first iteration of the project where the heat diffusion was not conserved. We can see the following three animations for n=3, n=4, n=5 where the color represents the normalized difference in temperature:
 
 <img src="ImagesWriteup/Final_3.gif" width="325"> <img src="ImagesWriteup/Final_4.gif" width="325"> <img src="ImagesWriteup/Final_5.gif" width="325">
 
@@ -286,7 +286,7 @@ Note that all of these are on the same time scale, meaning that the number of no
 
 Fig 7. Nonconserved heat diffusion for three depths. The first graph represents the adaptability of the octree and how many leaf nodes there are as the octree develops. The second represents the slice where the hot node is introduced and how much heat is in that slice as it diffuses. Finally, the last graph contains the total heat in the system. As we can see, it is not conserved and increases over time with it even having differences between the depths (most likely because the calculation depending on the size of the node). 
 
-Now we can look at the conserved heat diffusion equation. The colors here are represented differently from the previous program. Instead, these are maximized on the current maximum temperature. As the heat spreads and reaches equilibirum, they should all become the same bright yellow/white color since they all have a similar max temperature.
+Now we can look at the conserved heat diffusion equation. The colors here are represented differently from the previous program. Instead, these are normalized on the current maximum temperature. As the heat spreads and reaches equilibirum, they should all become the same bright yellow/white color since they all have a similar max temperature.
 
 <img src="ImagesWriteup/animation_3.gif" width="325"> <img src="ImagesWriteup/animation_4.gif" width="325"> <img src="ImagesWriteup/animation_5.gif" width="325">
 
@@ -302,15 +302,13 @@ Fig 10. This is the total heat vs time for the conserved heat. The image on the 
 
 ## Conclusion
 
+
+
 There are many areas to improve with this code to create a better atmospheric model. Although they were not implemented here, various additional storm functions could be added without much change to Main.py and Octree_Functions.py to make a much more accurate model. Some of the possible additional charactersitics involved with storms (some of which were previously mentioned in the introduction) are vorticity, wind speed, and pressure. Although these would help achieve the original intent of this project, it was decided to focus on heat diffusion because of three reasons: 1) time constraint, 2) measurability and consistency, and 3) node borders. 
 
 The last two in particular drove this decision. Heat diffusion is a much simpler process to check consistency of because it is simply the flow of heat between boxes, so checking if its conserved as it flows is much easier then wind velocity where you have to check directions on top of the scalar intensity. Additonally, a major issue with this method of octrees is the neighbors. Any particular node may have more neighbors on one edge of its spatial size then another, making storing and accounting for fluxes much more difficult to keep track of. This code would be moreso an approximation of heat diffusion since it either averages neighbors on a side or simply chooses one as a representation. Therefore, strange behaviors can emerge as seen in the previous section heat_conservation function. The diffusion appears to favor growth in the vertical direction (similar problem to the diffusion example!), which may be due to the number of nodes in a region of space. The direction of spread may favor more nodes. An additional area to improve is how the maximum depth can change the rate of diffusion and total heat, again shown in the previous section. Balancing this data structure to accurate measurements of the physics is an integral step that needs to be improved on. 
 
-In summary, 
-
--Areas to improve code
--Restate important points of result
--Retate importance of data management 
+This project demonstrated that an adaptive Eulerian octree can efficiently model heat diffusion while significantly reducing the number of spatial checks compared to a uniformly refined grid. Although the initial diffusion algorithm did not conserve heat, a revised flux based method improved conservation. The simulations also revealed challenges unique to adaptive meshes, including depth-dependent diffusion rates and unusual spreading caused by unequal neighbor relationships. These results highlight both the advantages and numerical challenges of applying octree-based adaptive meshes to atmospheric modeling.
 
 ## Languages, Libraries, Lessons Learned
 
@@ -318,7 +316,7 @@ This project let me investigate data structures and the very tip of the iceberg 
 
 ## Timekeeping
 
-As of 5/31/26: 44 hours
+As of 6/01/26: 47 hours
 
 ## Soucres
 
