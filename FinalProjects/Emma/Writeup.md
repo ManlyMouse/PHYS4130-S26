@@ -59,7 +59,7 @@ The code is divided into three main files: Octree_Functions.py, Storm_Functions.
 
 Octree_Functions contains all the main functions for the octree to initalize, subdvidide, and update. Some of the more notable functions are the following:
 
-'''python
+```python
 
     def __init__(self, center, size, depth):
         self.center = center
@@ -86,9 +86,73 @@ Octree_Functions contains all the main functions for the octree to initalize, su
             'zm': None,
             'zp': None,
         }
-'''
+```
 
 The most important definition in the entire project is the object class node. This object initializes with the center of itself, the size of the node in space, and the current depth it is at. It also initalizes with the characteristic of it being a leaf node, which eventually changes later when it subdivides, and an array of nones that will be filled with its children nodes. In addition to these parameters, it also stores data for several environmental parameters (but since we are focusing on only temperature, only self.T is used). Most importantly, it contains a list of its current neighbors to make neighbor lookup significantly more efficient. 
+
+```python
+if node.leaf != True or node.depth >= max_depth:
+        return
+
+    node.leaf = False # It is no longer a leaf case. It has children now
+    depth = node.depth + 1 # Update depth
+    child_size = node.size / 2
+    
+    offsets = [-child_size/2, child_size/2] # Need to offset center for grid so it is in middle of box.
+
+    child_index = 0
+    for dx in offsets:
+        for dy in offsets:
+            for dz in offsets:
+                center_x = node.center[0] + dx
+                center_y = node.center[1] + dy
+                center_z = node.center[2] + dz
+
+                child = Node([center_x, center_y, center_z], child_size, depth)
+
+                # The parents parameters will become the children's
+                child.u = node.u
+                child.v = node.v
+                child.w = node.w
+                child.omega = node.omega.copy() # Bc it is array
+                child.T = node.T
+                
+                node.children[child_index] = child
+                child_index += 1
+```
+
+The second most important function is the function subdivide. This is the function that is creating the structure of the tree. If a node is not a leaf or a node is at the maximum depth, it will not subdivide. If it is a leaf node and it isn't at the maximum depth, then the node can be subdivided and given child nodes. Eight new nodes are created inside of the parent node's spatial region and their centers and size are calculated. The children nodes inherit the parent's parameters and are then assigned to the parent's child array. The subdivision is now complete.
+
+```python
+node = root
+
+    value = 0
+    # This will loop until it finds the leaf node to extract the particles
+    while node.leaf != True:
+        value = 0
+
+        if  point[0] >= node.center[0]:
+            value |= 4
+        if point[1] >= node.center[1]:
+            value |= 2
+        if point[2] >= node.center[2]:
+            value |= 1
+        
+        # Example: Say we said yes to all three if statements. Then we have 7 and that represents
+        # our positive quadrant for this center. 
+
+        found_node = node.children[value]
+
+        if found_node is None:
+            return node, value
+        node = found_node
+
+    return node, value
+```
+
+A useful function that is frequently used is the find_node definition. Given a point in space it uses a color quantization algorthim that is originally used for a digital image process that reduces the number of distinct colors used in an image, usually with the intention that the new image should be as visually similar as possible to the original image. The formula in rgb is written as 4r + 2g + b. However, in this case we will use the bitwise or to organize any point using the positive and negative three spatial directions to get an index value representing the child node it is in. An example is as follows: 
+
+Say we have a point where all three of its coordinates are positives. Our value starts at 0, so after the first if statement we have 0 |= 4 which is 4. Then, the next if statement is true such that we now have 4 |= 2 which is 6. Finally, the last if statement has 6 |= 1 which is 7. Thefore, the child node with index 7 in the parent's child array has our point. Recursively doing this until gitting a leaf node will get the exact node the point is in. 
 
 ### Storm_Functions
 
