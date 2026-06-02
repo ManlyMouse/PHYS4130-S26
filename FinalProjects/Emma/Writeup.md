@@ -241,7 +241,7 @@ This heat diffusion considers the size of the node and evenly adds and subtracts
 The Main.py is what calls the previous two files and lets us determine when to subdivide the octree. It also initializes a hot node to start diffusing. The cycle of main functions as the following:
 
 <p align="center">
-  <img src="ImagesWriteup/Mainpy.gif" width="600">
+  <img src="ImagesWriteup/Mainpy.png" width="300">
 </p>
 
 All leaves are located in the octree. Then, the heat diffusion function is called with the leaves list. To get a better view of the diffusion, a slice is taken of the grid and a plot is generated. After the diffusion is complete, all leaf nodes are checked to see if any nodes have hit the threshold to subdivide:
