@@ -60,11 +60,13 @@ Our next word to define is octree. An octree is a tree structure that partitions
 
 <img src="ImagesWriteup/Euler.png" width="300"> <img src="ImagesWriteup/OctreeExample.png" width="700">
 
-Figure 2. On the left is eulerian 
+Figure 2. On the left is Eulerian vs Lagrangian perspectives of code. The right image is an example of an octree structure and how it divides subspace. 
 
 The idea for this project was initially found through video game development for AI pathfinding. Say an AI needs to take the shortest path to a player, but there are objects it needs to avoid. The AI could either check each point in space for a possible object, or we could define regions with objects in finer detail and leave spaces without objects broader. When an AI checks which path it needs to take to avoid an object, it'll check the empty region only once instead of every single point. This significantly reduces the number of checks each step has to do, making computation time much faster. Consider the two images below as an example. The balls are in finer detail than the empty space around them, and so are the trees.
 
 <img src="ImagesWriteup/Balls.png" width="500"> <img src="ImagesWriteup/Trees.png" width="500">
+
+Figure 3. The left and right images are examples of octrees working on objects.
 
 Now consider doing this with atmospheric modeling. Regions with more activity are subdivided into more detail and regions with calmer weather are left to be broader. However, note that this doesn't necessarily mean these regions can't gain more nodes. The flow of these proccesses can trigger subdivisions as we will soon see. 
 
@@ -73,6 +75,8 @@ The last important idea of octrees is the maximum depth of the tree structure. I
 <p align="center">
   <img src="ImagesWriteup/DetailTree.png" width="500">
 </p>
+
+Figure 4. These are two trees with different levels of resolution. 
 
 Building on this idea, the biggest issue comes in with how the code effects the physics. Consider if a physics simulation of wind made the leaves of these two trees move. Although initially they might move in similar ways, minute differences would cause a divergence in their behavior. Since octrees often work off of averages of the physics of these simulations, a similar difference may occur in these models. 
 
@@ -246,6 +250,8 @@ The Main.py is what calls the previous two files and lets us determine when to s
   <img src="ImagesWriteup/Mainpy.png" width="300">
 </p>
 
+Figure 5. Cycle of main.py.
+
 All leaves are located in the octree. Then, the heat diffusion function is called with the leaves list. To get a better view of the diffusion, a slice is taken of the grid and a plot is generated. After the diffusion is complete, all leaf nodes are checked to see if any nodes have hit the threshold to subdivide:
 
 ```python
@@ -272,27 +278,27 @@ There are various animations and graphs resulting from this project. We will beg
 
 <img src="ImagesWriteup/Final_3.gif" width="325"> <img src="ImagesWriteup/Final_4.gif" width="325"> <img src="ImagesWriteup/Final_5.gif" width="325">
 
-Fig (FIX). Octree development for nonconserved heat diffusion given a maximum depth of 3, 4, and 5 for the octree. Colors are based on a normalization between 0 and 1 and don't necessarily represent the true temperature of each node. 
+Fig 6. Octree development for nonconserved heat diffusion given a maximum depth of 3, 4, and 5 for the octree. Colors are based on a normalization between 0 and 1 and don't necessarily represent the true temperature of each node. 
 
 Note that all of these are on the same time scale, meaning that the number of nodes effects the rate of diffusion. We can see more about this in the following three graphs:
 
 <img src="ImagesWriteup/LeafvsTime.png" width="325"> <img src="ImagesWriteup/SliceHeatvsTIme.png" width="325"> <img src="ImagesWriteup/TotalHeatvsTime.png" width="325">
 
-Fig (FIX). Nonconserved heat diffusion for three depths. The first graph represents the adaptability of the octree and how many leaf nodes there are as the octree develops. The second represents the slice where the hot node is introduced and how much heat is in that slice as it diffuses. Finally, the last graph contains the total heat in the system. As we can see, it is not conserved and increases over time with it even having differences between the depths (most likely because the calculation depending on the size of the node). 
+Fig 7. Nonconserved heat diffusion for three depths. The first graph represents the adaptability of the octree and how many leaf nodes there are as the octree develops. The second represents the slice where the hot node is introduced and how much heat is in that slice as it diffuses. Finally, the last graph contains the total heat in the system. As we can see, it is not conserved and increases over time with it even having differences between the depths (most likely because the calculation depending on the size of the node). 
 
 Now we can look at the conserved heat diffusion equation. The colors here are represented differently from the previous program. Instead, these are maximized on the current maximum temperature. As the heat spreads and reaches equilibirum, they should all become the same bright yellow/white color since they all have a similar max temperature.
 
 <img src="ImagesWriteup/animation_3.gif" width="325"> <img src="ImagesWriteup/animation_4.gif" width="325"> <img src="ImagesWriteup/animation_5.gif" width="325">
 
-Fig (FIX). Octree development for conserved heat diffusion given a maximum depth of 3, 4, and 5 for the octree. Colors are based on a normalization of the maximum 
+Fig 8. Octree development for conserved heat diffusion given a maximum depth of 3, 4, and 5 for the octree. Colors are based on a normalization of the maximum 
 
 <img src="ImagesWriteup/LeafCountvsTimeConserved.png" width="500"> <img src="ImagesWriteup/SliceHeatvsTimeConserved.png" width="500"> 
 
-Fig (FIX).
+Fig 9. On the left is the leaf count vs time for the conserved heat diffusion and on the right is the total heat vs time.
 
 <img src="ImagesWriteup/TotalEnergyvsTimeConserved.png" width="500"> <img src="ImagesWriteup/CloseUpConserved.png" width="500">
 
-Fig (FIX). 
+Fig 10. This is the total heat vs time for the conserved heat. The image on the right is the zoomed in graph.
 
 ## Conclusion
 
@@ -317,6 +323,8 @@ As of 5/31/26: 44 hours
 ## Soucres
 
 ### Websites
+
+https://mpimet.mpg.de/en/research/modeling (ICON Max-Planck)
 
 https://en.wikipedia.org/wiki/Primitive_equations (Prinitive Equation definitions used in the introduction)
 
