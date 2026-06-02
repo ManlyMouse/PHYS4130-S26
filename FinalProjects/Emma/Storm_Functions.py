@@ -56,3 +56,4 @@ def diffuse_conservative(leaves, alpha=0.02):
     for node in leaves:
         V_node = node.size**3
         node.T += delta_heat[id(node)] / V_node
+        

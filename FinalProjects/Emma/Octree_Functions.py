@@ -103,7 +103,7 @@ def find_node(root, point):
 
     # From the wiki, we can use the color quantization program which determines the child node 
     # via the formula 4r + 2g + b, but here instead of red, green, and blue we can use 
-    # our postive and negative 3 directions. Thus
+    # our postive and negative 3 directions. 
     node = root
 
     value = 0
