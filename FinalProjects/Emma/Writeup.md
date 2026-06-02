@@ -78,7 +78,7 @@ Building on this idea, the biggest issue comes in with how the code effects the 
 
 The code is divided into three main files: Octree_Functions.py, Storm_Functions.py, and Main.py. Octree_Functions contains all the function definitions for the management of the octree and the class object for the spatial nodes. It was decided that this project would focus on the heat diffusion aspect of atmospheric models to test the octree structure. The Storm_Functions file contains two heat equations from different iterations of this project. The first is not a closed system and has fluctuating heat, meaning the initial results were not a conserved system for heat diffusion. The second heat function is the improved iteration that, although not perfect, does maintain a more accurate conserved system then the first. The Main.py imports the previous files, initiates a hot spot somewhere in space, and updates the octree. Additionally, it creates the graphs seen later for measuring octree growth and total heat. Main.py was ran three times with a maximum octree depth of 3, 4, and 5, meaning they could not subdivide past that depth. 
 
-### Octree_Functions
+### Octree_Functions and Storm_Functions
 
 Octree_Functions contains all the main functions for the octree to initalize, subdvidide, and update. Some of the more notable functions are the following:
 
@@ -179,11 +179,88 @@ Say we have a point where all three of its coordinates are positives. Our value 
 
 In addition to these three, there are some less complicated functions. The definition get_leaves finds all the current leaf nodes in the octree, get_neighbors will probe the surrounding six directions that touch the face of the cell to find a node's neighbors, and rebuild_neighbors will take a node and update its current neighbor list.  
 
-### Storm_Functions
+There are two heat diffusion functions within the Storm_functions file: diffuse and diffuse_conservation. Diffuse is the first iteration of the code and is a nonconserved heat diffusion while diffuse_conservation is conserved.  
 
-There are two heat diffusion functions within this file: diffuse and diffuse_conservation. Diffuse is the first iteration of the code 
+```python
+def diffuse(leaves, alpha=0.1):
+
+    new_T = {}
+    
+    for node in leaves:
+        neighbor_temps = []
+
+        # Use the cached neighbors instead of looping through all leaves
+        for key in ['xm', 'xp', 'ym', 'yp', 'zm', 'zp']:
+            nb = node.neighbors.get(key)
+            if nb:
+                neighbor_temps.append(nb.T)
+        
+        if neighbor_temps:
+            avg = sum(neighbor_temps) / len(neighbor_temps)
+            new_T[id(node)] = node.T + alpha * (avg - node.T)
+        else:
+            new_T[id(node)] = node.T
+
+    for node in leaves:
+        node.T = new_T[id(node)]
+```
+
+This version averages neighbors' temperatures equally with the node, meaning that tinier cells could experience a growth in temperature which should not happen. In contrast:
+
+```python
+def diffuse_conservative(leaves, alpha=0.02):
+    delta_heat = {id(node): 0.0 for node in leaves}
+
+    for node in leaves:
+        V_node = node.size**3
+
+        for key in ['xm', 'xp', 'ym', 'yp', 'ym', 'yp', 'zm', 'zp']:
+            nb = node.neighbors.get(key)
+            if nb is None:
+                continue
+
+            V_nb = nb.size**3
+
+            dT = nb.T - node.T
+
+            # heat exchanged between cells
+            heat_flux = alpha * dT * min(V_node, V_nb)
+
+            delta_heat[id(node)] += heat_flux
+            delta_heat[id(nb)] -= heat_flux
+
+    for node in leaves:
+        V_node = node.size**3
+        node.T += delta_heat[id(node)] / V_node
+```
+
+This heat diffusion considers the size of the node and evenly adds and subtracts temperature. 
 
 ### Main
+
+The Main.py is what calls the previous two files and lets us determine when to subdivide the octree. It also initializes a hot node to start diffusing. The cycle of main functions as the following:
+
+
+
+All leaves are located in the octree. Then, the heat diffusion function is called with the leaves list. To get a better view of the diffusion, a slice is taken of the grid and a plot is generated. After the diffusion is complete, all leaf nodes are checked to see if any nodes have hit the threshold to subdivide:
+
+```python
+# Refine/Subdivide. 
+        # Now that physics is done updating, check if anything has become a storm cell yet
+        for leaf in leaves:
+            if abs(leaf.T) > 0.01 and leaf.depth < n: # Replace this with your test
+                Octree_Functions.subdivide(leaf, n)
+
+                # Cache neighbors back into node so its easier to update
+                leaf.neighbors = Octree_Functions.get_neighbors(root, leaf)
+
+        # Rebuild leaf list
+        leaves = Octree_Functions.rebuild_neighbors(root)
+```
+
+The leaf and neighbor list is rebuilt, and the cycle continues. 
+
+After cycling through the timespan, the number of leaves, the total energy in the slice, and the total energy in the system are recorded to create graphs. The results follow.
 
 ## Resulting Animations and Graphs
 
