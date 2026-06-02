@@ -53,13 +53,44 @@ Building on this idea, the biggest issue comes in with how the code effects the 
 
 ## Summary of Code
 
-The code is divided into three main files: OctreeFunctions.py, StormFunctions.py, and Main.py. OctreeFunctions contains all the function definitions for the management of the octree and the class object for the spatial nodes. It was decided that this project would focus on the heat diffusion aspect of atmospheric models to test the octree structure. The StormFunctions file contains two heat equations from different iterations of this project. The first is not a closed system and has fluctuating heat, meaning the initial results were not a conserved system for heat diffusion. The second heat function is the improved iteration that, although not perfect, does maintain a more accurate conserved system then the first. The Main.py imports the previous files, initiates a hot spot somewhere in space, and updates the octree. Additionally, it creates the graphs seen later for measuring octree growth and total heat. Main.py was ran three times with a maximum octree depth of 3, 4, and 5, meaning they could not subdivide past that depth. 
+The code is divided into three main files: Octree_Functions.py, Storm_Functions.py, and Main.py. Octree_Functions contains all the function definitions for the management of the octree and the class object for the spatial nodes. It was decided that this project would focus on the heat diffusion aspect of atmospheric models to test the octree structure. The Storm_Functions file contains two heat equations from different iterations of this project. The first is not a closed system and has fluctuating heat, meaning the initial results were not a conserved system for heat diffusion. The second heat function is the improved iteration that, although not perfect, does maintain a more accurate conserved system then the first. The Main.py imports the previous files, initiates a hot spot somewhere in space, and updates the octree. Additionally, it creates the graphs seen later for measuring octree growth and total heat. Main.py was ran three times with a maximum octree depth of 3, 4, and 5, meaning they could not subdivide past that depth. 
 
-### OctreeFunctions
+### Octree_Functions
 
+Octree_Functions contains all the main functions for the octree to initalize, subdvidide, and update. Some of the more notable functions are the following:
 
+'''python
 
-### StormFunctions
+    def __init__(self, center, size, depth):
+        self.center = center
+        self.size = size
+        self.depth = depth
+        self.leaf = True
+        self.children = [None, None, None, None, None, None, None, None] # Produces 8 children for subdivision
+
+        # Fluid dynamic variables
+        self.u = 0 # Velocity for X axis
+        self.v = 0 # Velocity for Y axis
+        self.w = 0 # Velocity for Z axis
+        self.omega = [0, 0 , 0] # Vorticity for x-, y-, z- directions
+        self.T = 0 # Temperature 
+
+        # Calculate the neighbors after each rebuilding of leaf list. Includes six neighbors on each cell's face in 3D space.
+        # This is to shorten number of loops we have to go through to calculate temperature gradients.
+        # Only needs to be updated if we subdivide/collapse the octree
+        self.neighbors = {
+            'xm': None, # all labels of m means minus direction. So this is face on the negative x side
+            'xp': None, # all labels of p means positive direction. So this is face on the positive x side
+            'ym': None,
+            'yp': None,
+            'zm': None,
+            'zp': None,
+        }
+'''
+
+The most important definition in the entire project is the object class node. This object initializes with the center of itself, the size of the node in space, and the current depth it is at. It also initalizes with the characteristic of it being a leaf node, which eventually changes later when it subdivides, and an array of nones that will be filled with its children nodes. In addition to these parameters, it also stores data for several environmental parameters (but since we are focusing on only temperature, only self.T is used). Most importantly, it contains a list of its current neighbors to make neighbor lookup significantly more efficient. 
+
+### Storm_Functions
 
 There are two heat diffusion functions within this file: diffuse and diffuse_conservation. Diffuse is the first iteration of the code 
 
@@ -95,7 +126,7 @@ Fig (FIX).
 
 ## Conclusion
 
-There are many areas to improve with this code to create a better atmospheric model. Although they were not implemented here, various additional storm functions could be added without much change to Main.py and OctreeFunctions.py to make a much more accurate model. Some of the possible additional charactersitics involved with storms (some of which were previously mentioned in the introduction) are vorticity, wind speed, and pressure. Although these would help achieve the original intent of this project, it was decided to focus on heat diffusion because of three reasons: 1) time constraint, 2) measurability and consistency, and 3) node borders. 
+There are many areas to improve with this code to create a better atmospheric model. Although they were not implemented here, various additional storm functions could be added without much change to Main.py and Octree_Functions.py to make a much more accurate model. Some of the possible additional charactersitics involved with storms (some of which were previously mentioned in the introduction) are vorticity, wind speed, and pressure. Although these would help achieve the original intent of this project, it was decided to focus on heat diffusion because of three reasons: 1) time constraint, 2) measurability and consistency, and 3) node borders. 
 
 The last two in particular drove this decision. Heat diffusion is a much simpler process to check consistency of because it is simply the flow of heat between boxes, so checking if its conserved as it flows is much easier then wind velocity where you have to check directions on top of the scalar intensity. Additonally, a major issue with this method of octrees is the neighbors. Any particular node may have more neighbors on one edge of its spatial size then another, making storing and accounting for fluxes much more difficult to keep track of. This code would be moreso an approximation of heat diffusion since it either averages neighbors on a side or simply chooses one as a representation. Therefore, strange behaviors can emerge as seen in the previous section heat_conservation function. The diffusion appears to favor growth in the vertical direction (similar problem to the diffusion example!), which may be due to the number of nodes in a region of space. The direction of spread may favor more nodes. An additional area to improve is how the maximum depth can change the rate of diffusion and total heat, again shown in the previous section. Balancing this data structure to accurate measurements of the physics is an integral step that needs to be improved on. 
 
