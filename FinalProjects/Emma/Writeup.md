@@ -18,43 +18,37 @@ Figure 1. From the Max-Planck-Institut climate model ICON. Wind speed near the s
 
 Atmospheric models are mathematical frameworks used to simulate and predict the behavior of Earth's atmosphere. It uses primitive equations, which are a set of nonlinear partial differential equations that are used to approximate global atmospheric flow. They consist of three balance equations:
 
-1. The continuity equation: Representing the conservation of mass.
+1. **The Continuity Equation:** Represents conservation of mass.
 
-$$
+```math
 \frac{\partial \rho}{\partial t}
 +
-\nabla \cdot (\rho \mathbf{u})
+\nabla \cdot (\rho \mathbf{v})
 =
 0
-$$
+```
 
-2. Conservation of Momentum: Consisting of a form of the Navier–Stokes equations that describe hydrodynamical flow on the surface of a sphere under the assumption that         vertical motion is much smaller than horizontal motion (hydrostasis) and that the fluid layer depth is small compared to the radius of the sphere.
+2. **Conservation of Momentum:** A form of the Navier–Stokes equations describing fluid flow on the surface of a sphere. The primitive equations assume that vertical motion is much smaller than horizontal motion (hydrostatic balance) and that the fluid layer depth is small compared to the radius of the sphere.
 
-$$
-\frac{\partial (\rho \mathbf{u})}{\partial t}
+```math
+\frac{D\mathbf{v}}{Dt}
 +
-\nabla \cdot (\rho \mathbf{u}\mathbf{u})
+2\mathbf{\Omega}\times\mathbf{v}
 =
--\nabla p
-+
-\rho \mathbf{g}
-+
-\nabla \cdot \boldsymbol{\tau}
-$$
+-\frac{\nabla p}{\rho}
+-
+\nabla\Phi
+-
+\nu\nabla^2\mathbf{v}
+```
 
 3. Thermal Energy Equation: Relating the overall temperature of the system to heat sources and sinks.
 
-$$
-\frac{\partial E}{\partial t}
-+
-\nabla \cdot \bigl((E+p)\mathbf{u}\bigr)
-=
-\nabla \cdot (k \nabla T)
-+
-\rho \mathbf{g}\cdot\mathbf{u}
-$$
+```math
+\frac{D\theta}{Dt}=0
+```
 
-[Definitions from source one, Wiki of Primitive Equations]
+[Definitions from source one and two]
 
 Atmospheric models supplement these equations with additional factors of natural proccesses that affect weather. For example, this could include turbulent diffusion, radiation, moist processes (clouds and precipitation), heat exchange, soil, vegetation, surface water, the kinematic effects of terrain, and convection. This can make an accurate computational model for atmospheric modeling incredibly complex and taxing on even supercomputers, as shown in the figure above. Working in 3D increases this complexity where the number of points to keep track of is $N^3$, so we need a smarter data structure to be able to run these simulations. Although grids and arrays in Python can outperform some data structures when there is less data to manage, these structures eventually slow down the processing time since it tracks each invidual point. This isn’t the best use of our memory if we are only interested in regions of activity (ie, storm formation, intense wind shear, etc). We need a data structure that stores all of this information, isn’t computationally taxing, and can adapt to activity. This is where a Eulerian Octree becomes useful. 
 
