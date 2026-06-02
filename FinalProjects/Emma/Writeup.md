@@ -19,11 +19,40 @@ Figure 1. From the Max-Planck-Institut climate model ICON. Wind speed near the s
 Atmospheric models are mathematical frameworks used to simulate and predict the behavior of Earth's atmosphere. It uses primitive equations, which are a set of nonlinear partial differential equations that are used to approximate global atmospheric flow. They consist of three balance equations:
 
 1. The continuity equation: Representing the conservation of mass.
+
+$$
+\frac{\partial \rho}{\partial t}
++
+\nabla \cdot (\rho \mathbf{u})
+=
+0
+$$
+
 2. Conservation of Momentum: Consisting of a form of the Navier–Stokes equations that describe hydrodynamical flow on the surface of a sphere under the assumption that         vertical motion is much smaller than horizontal motion (hydrostasis) and that the fluid layer depth is small compared to the radius of the sphere.
 
 $$
+\frac{\partial (\rho \mathbf{u})}{\partial t}
++
+\nabla \cdot (\rho \mathbf{u}\mathbf{u})
+=
+-\nabla p
++
+\rho \mathbf{g}
++
+\nabla \cdot \boldsymbol{\tau}
+$$
 
-3. Thermal Energy Equation: Relating the overall temperature of the system to heat sources and sinks. 
+3. Thermal Energy Equation: Relating the overall temperature of the system to heat sources and sinks.
+
+$$
+\frac{\partial E}{\partial t}
++
+\nabla \cdot \bigl((E+p)\mathbf{u}\bigr)
+=
+\nabla \cdot (k \nabla T)
++
+\rho \mathbf{g}\cdot\mathbf{u}
+$$
 
 [Definitions from source one, Wiki of Primitive Equations]
 
