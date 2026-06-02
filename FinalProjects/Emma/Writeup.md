@@ -302,7 +302,7 @@ Fig 10. This is the total heat vs time for the conserved heat. The image on the 
 
 ## Conclusion
 
-Starting with the number of leaves, we can see 
+Starting with the number of leaves, we can see the initial growth is approximately exponential, but later approaches a plateau as the octree reaches either the maximum refinement depth or a state where the temperature field is no longer sufficiently localized to trigger additional subdivisions. For the nonconservative diffusion, higher depths growth faster as it causes a cascading subdivision into leaf nodes. THe conservative case has an unusual difference. The fastest growing leaf count is actually n = 4. This is most likely due to the difference of hot node initialization. A smaller region is initialized with the same temperature
 
 There are many areas to improve with this code to create a better atmospheric model. Although they were not implemented here, various additional storm functions could be added without much change to Main.py and Octree_Functions.py to make a much more accurate model. Some of the possible additional charactersitics involved with storms (some of which were previously mentioned in the introduction) are vorticity, wind speed, and pressure. Although these would help achieve the original intent of this project, it was decided to focus on heat diffusion because of three reasons: 1) time constraint, 2) measurability and consistency, and 3) node borders. 
 
