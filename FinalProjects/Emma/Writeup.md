@@ -60,6 +60,8 @@ Our next word to define is octree. An octree is a tree structure that partitions
 
 <img src="ImagesWriteup/Euler.png" width="300"> <img src="ImagesWriteup/OctreeExample.png" width="700">
 
+Figure 2. On the left is eulerian 
+
 The idea for this project was initially found through video game development for AI pathfinding. Say an AI needs to take the shortest path to a player, but there are objects it needs to avoid. The AI could either check each point in space for a possible object, or we could define regions with objects in finer detail and leave spaces without objects broader. When an AI checks which path it needs to take to avoid an object, it'll check the empty region only once instead of every single point. This significantly reduces the number of checks each step has to do, making computation time much faster. Consider the two images below as an example. The balls are in finer detail than the empty space around them, and so are the trees.
 
 <img src="ImagesWriteup/Balls.png" width="500"> <img src="ImagesWriteup/Trees.png" width="500">
@@ -205,7 +207,7 @@ def diffuse(leaves, alpha=0.1):
         node.T = new_T[id(node)]
 ```
 
-This version averages neighbors' temperatures equally with the node, meaning that tinier cells could experience a growth in temperature which should not happen. In contrast:
+The averaging method treats all neighboring cells equally regardless of their volume, so heat is not transferred in equal and opposite amounts between cells. As a result, the total thermal energy of the system is not conserved. In contrast:
 
 ```python
 def diffuse_conservative(leaves, alpha=0.02):
