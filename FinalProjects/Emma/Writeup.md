@@ -154,6 +154,8 @@ A useful function that is frequently used is the find_node definition. Given a p
 
 Say we have a point where all three of its coordinates are positives. Our value starts at 0, so after the first if statement we have 0 |= 4 which is 4. Then, the next if statement is true such that we now have 4 |= 2 which is 6. Finally, the last if statement has 6 |= 1 which is 7. Thefore, the child node with index 7 in the parent's child array has our point. Recursively doing this until gitting a leaf node will get the exact node the point is in. 
 
+In addition to these three, there are some less complicated functions. The definition get_leaves finds all the current leaf nodes in the octree, get_neighbors will probe the surrounding six directions that touch the face of the cell to find a node's neighbors, and rebuild_neighbors will take a node and update its current neighbor list.  
+
 ### Storm_Functions
 
 There are two heat diffusion functions within this file: diffuse and diffuse_conservation. Diffuse is the first iteration of the code 
